@@ -27,6 +27,8 @@ class Gateway
      */
     protected $id;
 
+    protected $testing = false;
+
     /**
      * The Moneris API Token.
      *
@@ -66,7 +68,7 @@ class Gateway
      */
     public function purchase(array $params = [])
     {
-        array_merge($params, [
+        $params = array_merge($params, [
             'type' => 'purchase',
             'crypt_type' => Crypt::SSL_ENABLED_MERCHANT,
         ]);
