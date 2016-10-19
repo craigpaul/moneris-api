@@ -12,25 +12,10 @@ namespace CraigPaul\Moneris;
  */
 class Moneris
 {
-    /**
-     * The live Moneris API.
-     *
-     * @var string
-     */
-    const ENV_LIVE = 'live';
+    use Gettable;
 
-    /**
-     * The sandbox Moneris API.
-     *
-     * @var string
-     */
+    const ENV_LIVE    = 'live';
     const ENV_STAGING = 'staging';
-
-    /**
-     * The mocked Moneris API.
-     *
-     * @var string
-     */
     const ENV_TESTING = 'testing';
 
     /**
@@ -100,22 +85,5 @@ class Moneris
     public function gateway()
     {
         return new Gateway($this->id, $this->token, $this->environment);
-    }
-
-    /**
-     * Retrieve a property off of the class.
-     *
-     * @param string $property
-     *
-     * @throws \InvalidArgumentException
-     * @return mixed
-     */
-    public function __get(string $property)
-    {
-        if (property_exists($this, $property)) {
-            return $this->$property;
-        }
-
-        throw new \InvalidArgumentException('['.get_class($this).'] does not contain a property named ['.$property.']');
     }
 }
