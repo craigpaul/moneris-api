@@ -10,6 +10,7 @@
         }
     ],
     "require": {
+        "php": ">=7.0",
         "guzzlehttp/guzzle": "~6.0"
     },
     "require-dev": {
@@ -18,7 +19,7 @@
     },
     "autoload": {
         "psr-4": {
-		"CraigPaul\\Moneris\\": "src/"
+            "CraigPaul\\Moneris\\": "src/"
         }
     },
     "minimum-stability": "dev",
