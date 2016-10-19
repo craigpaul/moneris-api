@@ -3,7 +3,7 @@
 use CraigPaul\Moneris\Moneris;
 use CraigPaul\Moneris\Gateway;
 
-class MonerisTest extends PHPUnit_Framework_TestCase
+class MonerisTest extends TestCase
 {
     /**
      * The Moneris store id.
