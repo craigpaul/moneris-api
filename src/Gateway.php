@@ -2,8 +2,17 @@
 
 namespace CraigPaul\Moneris;
 
+/**
+ * CraigPaul\Moneris\Gateway
+ *
+ * @property-read string $id
+ * @property-read string $token
+ * @property-read string $environment
+ */
 class Gateway
 {
+    use Gettable;
+
     /**
      * The environment used for connecting to the Moneris API.
      *
