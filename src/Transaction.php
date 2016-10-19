@@ -2,15 +2,19 @@
 
 namespace CraigPaul\Moneris;
 
+use SimpleXMLElement;
+
 /**
  * CraigPaul\Moneris\Gateway
  *
+ * @property-read array $errors
  * @property-read \CraigPaul\Moneris\Gateway $gateway
  * @property-read array $params
+ * @property SimpleXMLElement $response
  */
 class Transaction
 {
-    use Gettable;
+    use Gettable, Settable;
 
     /**
      * The errors for the transaction.
@@ -32,6 +36,11 @@ class Transaction
      * @var array
      */
     protected $params;
+
+    /**
+     * @var SimpleXMLElement
+     */
+    protected $response;
 
     /**
      * Create a new Transaction instance.
@@ -83,6 +92,32 @@ class Transaction
     }
 
     /**
+     * Convert the transaction parameters into an XML structure.
+     *
+     * @return string|bool
+     */
+    public function toXml()
+    {
+        $gateway = $this->gateway;
+        $params = $this->params;
+
+        $type = in_array($params['type'], ['txn', 'acs']) ? 'MpiRequest' : 'request';
+
+        $xml = new SimpleXMLElement("<$type/>");
+        $xml->addChild('store_id', $gateway->id);
+        $xml->addChild('api_token', $gateway->token);
+
+        $type = $xml->addChild($params['type']);
+        unset($params['type']);
+
+        foreach ($params as $key => $value) {
+            $type->addChild($key, $value);
+        }
+
+        return $xml->asXML();
+    }
+
+    /**
      * Check that the required parameters have been provided to the transaction.
      *
      * @return bool
@@ -114,5 +149,22 @@ class Transaction
         $this->errors = $errors;
 
         return empty($errors);
+    }
+
+    /**
+     * Validate the result of the Moneris API call.
+     *
+     * @param \SimpleXMLElement $result
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function validate(SimpleXMLElement $result)
+    {
+        $this->response = $result;
+
+        $response = Response::create($this);
+        $response->validate();
+
+        return $response;
     }
 }
