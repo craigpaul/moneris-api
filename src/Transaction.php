@@ -13,11 +13,15 @@ class Transaction
     use Gettable;
 
     /**
+     * The Gateway instance.
+     *
      * @var \CraigPaul\Moneris\Gateway
      */
     protected $gateway;
 
     /**
+     * The extra parameters needed for Moneris.
+     *
      * @var array
      */
     protected $params;
