@@ -13,6 +13,13 @@ class Transaction
     use Gettable;
 
     /**
+     * The errors for the transaction.
+     *
+     * @var array
+     */
+    protected $errors;
+
+    /**
      * The Gateway instance.
      *
      * @var \CraigPaul\Moneris\Gateway
@@ -40,6 +47,16 @@ class Transaction
     }
 
     /**
+     * Check that the required parameters have not been provided to the transaction.
+     *
+     * @return bool
+     */
+    public function invalid()
+    {
+        return !$this->valid();
+    }
+
+    /**
      * Prepare the transaction parameters.
      *
      * @param array $params
@@ -63,5 +80,39 @@ class Transaction
         }
 
         return $params;
+    }
+
+    /**
+     * Check that the required parameters have been provided to the transaction.
+     *
+     * @return bool
+     */
+    public function valid()
+    {
+        $params = $this->params;
+        $errors = [];
+
+        $errors[] = Validator::empty($params) ? 'No parameters provided.' : null;
+
+        if (isset($params['type'])) {
+            switch ($params['type']) {
+                case 'purchase':
+                    $errors[] = Validator::set($params, 'order_id') ? null : 'Order Id not provided.';
+                    $errors[] = Validator::set($params, 'pan') ? null : 'Credit card number not provided.';
+                    $errors[] = Validator::set($params, 'amount') ? null : 'Amount not provided.';
+                    $errors[] = Validator::set($params, 'expdate') ? null : 'Expiry date not provided.';
+
+                    break;
+                default:
+                    $errors[] = $params['type'].' is not a supported transaction type.';
+            }
+        } else {
+            $errors[] = 'Transaction type not provided.';
+        }
+
+        $errors = array_filter($errors);
+        $this->errors = $errors;
+
+        return empty($errors);
     }
 }
