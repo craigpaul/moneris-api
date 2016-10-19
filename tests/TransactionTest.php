@@ -20,6 +20,8 @@ class TransactionTest extends TestCase
     protected $params;
 
     /**
+     * The Transaction instance.
+     *
      * @var \CraigPaul\Moneris\Transaction
      */
     protected $transaction;
@@ -37,7 +39,7 @@ class TransactionTest extends TestCase
         $this->gateway = Moneris::create($this->id, $this->token, $this->params)->connect();
         $this->params = [
             'type' => 'purchase',
-            'order_id' => '1234-567890',
+            'order_id' => uniqid('1234-56789', true),
             'amount' => '1.00',
             'pan' => $this->visa,
             'expdate' => '2012',
@@ -83,5 +85,14 @@ class TransactionTest extends TestCase
 
         $this->assertFalse($transaction->valid());
         $this->assertTrue($transaction->invalid());
+    }
+
+    /** @test */
+    public function it_can_transform_itself_to_an_xml_structure()
+    {
+        $xml = $this->transaction->toXml();
+        $xml = simplexml_load_string($xml);
+
+        $this->assertNotEquals(false, $xml);
     }
 }
