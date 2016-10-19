@@ -2,6 +2,9 @@
 
 namespace CraigPaul\Moneris;
 
+use CraigPaul\Moneris\Validators\Purchase;
+use CraigPaul\Moneris\Validators\Validatable;
+
 /**
  * CraigPaul\Moneris\Gateway
  *
@@ -35,6 +38,13 @@ class Gateway
     protected $token;
 
     /**
+     * The current transaction.
+     *
+     * @var \CraigPaul\Moneris\Transaction
+     */
+    protected $transaction;
+
+    /**
      * Create a new Moneris instance.
      *
      * @param string $id
@@ -48,5 +58,70 @@ class Gateway
         $this->id = $id;
         $this->token = $token;
         $this->environment = $environment;
+    }
+
+    /**
+     * Make a purchase.
+     *
+     * @param array $params
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function purchase(array $params = [])
+    {
+        $this->validate(Purchase::class, $params);
+
+        array_merge($params, [
+            'type' => 'purchase',
+            'crypt_type' => Crypt::SSL_ENABLED_MERCHANT,
+        ]);
+
+        $transaction = $this->transaction($params);
+
+        return $this->process($transaction);
+    }
+
+    /**
+     * Process a transaction through the Moneris API.
+     *
+     * @param \CraigPaul\Moneris\Transaction $transaction
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    protected function process(Transaction $transaction)
+    {
+        return Processor::process($transaction);
+    }
+
+    /**
+     * Get or create a new Transaction instance.
+     *
+     * @param array|null $params
+     *
+     * @return \CraigPaul\Moneris\Transaction
+     */
+    protected function transaction(array $params = null)
+    {
+        if (is_null($this->transaction) || !is_null($params)) {
+            return $this->transaction = new Transaction($this, $params);
+        }
+
+        return $this->transaction;
+    }
+
+    /**
+     * Validate the supplied parameters against a provided class.
+     *
+     * @param string $class
+     * @param array $params
+     *
+     * @return void
+     */
+    protected function validate(string $class, array $params = [])
+    {
+        /** @var Validatable $class */
+        $class = new $class;
+
+        $class->validate($params);
     }
 }
