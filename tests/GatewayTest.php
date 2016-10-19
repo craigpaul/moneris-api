@@ -54,14 +54,6 @@ class GatewayTest extends TestCase
     }
 
     /** @test */
-    public function it_can_validate_that_it_has_received_improper_parameters_to_make_a_purchase()
-    {
-        $this->expectException(ValidationException::class);
-
-        $this->gateway->purchase([]);
-    }
-
-    /** @test */
     public function it_can_make_a_purchase_and_receive_a_response()
     {
         $params = [
