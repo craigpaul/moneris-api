@@ -6,7 +6,7 @@ use CraigPaul\Moneris\Gateway;
 class MonerisTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * The Moneris Store ID.
+     * The Moneris store id.
      *
      * @var string
      */
@@ -20,7 +20,7 @@ class MonerisTest extends PHPUnit_Framework_TestCase
     protected $params;
 
     /**
-     * The Moneris API Token.
+     * The Moneris API token.
      *
      * @var string
      */
