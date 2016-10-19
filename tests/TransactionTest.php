@@ -36,6 +36,7 @@ class TransactionTest extends TestCase
         $this->params = ['environment' => Moneris::ENV_TESTING];
         $this->gateway = Moneris::create($this->id, $this->token, $this->params)->connect();
         $this->params = [
+            'type' => 'purchase',
             'order_id' => '1234-567890',
             'amount' => '1.00',
             'pan' => $this->visa,
@@ -57,6 +58,7 @@ class TransactionTest extends TestCase
         $order = '   1234-567890';
         $card = '4242 4242 4242 4242';
         $transaction = new Transaction($this->gateway, [
+            'type' => 'purchase',
             'order_id' => $order,
             'amount' => '1.00',
             'pan' => $card,
@@ -65,5 +67,21 @@ class TransactionTest extends TestCase
 
         $this->assertEquals(trim($order), $transaction->params['order_id']);
         $this->assertEquals(preg_replace('/\D/', '', $card), $transaction->params['pan']);
+    }
+
+    /** @test */
+    public function it_can_determine_that_a_proper_set_of_parameters_has_been_provided_to_the_transaction()
+    {
+        $this->assertTrue($this->transaction->valid());
+        $this->assertFalse($this->transaction->invalid());
+    }
+
+    /** @test */
+    public function it_can_determine_that_an_improper_set_of_parameters_has_been_provided_to_the_transaction()
+    {
+        $transaction = new Transaction($this->gateway);
+
+        $this->assertFalse($transaction->valid());
+        $this->assertTrue($transaction->invalid());
     }
 }
