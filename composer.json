@@ -1,0 +1,26 @@
+{
+    "name": "craigpaul/moneris-api",
+    "description": "An easier way to consume the (truely awful) Moneris eSELECTplus API.",
+    "keywords": ["moneris", "eselectplus", "api"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Craig Paul",
+            "email": "craig@townfolio.co"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "~6.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~5.0",
+        "mockery/mockery": "~0.9"
+    },
+    "autoload": {
+        "psr-4": {
+		"CraigPaul\\Moneris\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
