@@ -56,7 +56,7 @@ class GatewayTest extends PHPUnit_Framework_TestCase
             'environment' => $this->environment
         ];
 
-        $this->gateway = Moneris::create($this->id, $this->token, $this->params)->gateway();
+        $this->gateway = Moneris::create($this->id, $this->token, $this->params)->connect();
     }
 
     /** @test */

@@ -82,7 +82,7 @@ class Moneris
      *
      * @return \CraigPaul\Moneris\Gateway
      */
-    public function gateway()
+    public function connect()
     {
         return new Gateway($this->id, $this->token, $this->environment);
     }

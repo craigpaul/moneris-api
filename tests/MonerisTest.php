@@ -92,7 +92,7 @@ class MonerisTest extends PHPUnit_Framework_TestCase
     {
         $moneris = new Moneris($this->id, $this->token, $this->params);
 
-        $gateway = $moneris->gateway();
+        $gateway = $moneris->connect();
 
         $this->assertEquals(Gateway::class, get_class($gateway));
         $this->assertObjectHasAttribute('id', $gateway);
