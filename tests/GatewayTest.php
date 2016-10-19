@@ -2,8 +2,10 @@
 
 use CraigPaul\Moneris\Gateway;
 use CraigPaul\Moneris\Moneris;
+use CraigPaul\Moneris\Response;
+use CraigPaul\Moneris\Exceptions\ValidationException;
 
-class GatewayTest extends PHPUnit_Framework_TestCase
+class GatewayTest extends TestCase
 {
     /**
      * The Moneris gateway.
@@ -76,5 +78,28 @@ class GatewayTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->id, $this->gateway->id);
         $this->assertEquals($this->token, $this->gateway->token);
         $this->assertEquals($this->environment, $this->gateway->environment);
+    }
+
+    /** @test */
+    public function it_can_validate_that_it_has_received_improper_parameters_to_make_a_purchase()
+    {
+        $this->expectException(ValidationException::class);
+
+        $this->gateway->purchase([]);
+    }
+
+    /** @test */
+    public function it_can_make_a_purchase_and_receive_a_response()
+    {
+        $params = [
+            'order_id' => '1234-567890',
+            'amount' => '1.00',
+            'pan' => $this->visa,
+            'expdate' => '2012',
+        ];
+
+        $response = $this->gateway->purchase($params);
+
+        $this->assertEquals(Response::class, get_class($response));
     }
 }
