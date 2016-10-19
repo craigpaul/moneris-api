@@ -21,9 +21,7 @@ class MonerisTest extends TestCase
     {
         parent::setUp();
 
-        $this->params = [
-            'environment' => Moneris::ENV_TESTING
-        ];
+        $this->params = ['environment' => Moneris::ENV_TESTING];
     }
 
     /** @test */
