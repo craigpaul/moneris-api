@@ -6,25 +6,11 @@ use CraigPaul\Moneris\Gateway;
 class MonerisTest extends TestCase
 {
     /**
-     * The Moneris store id.
-     *
-     * @var string
-     */
-    protected $id;
-
-    /**
      * The Moneris API parameters.
      *
      * @var array
      */
     protected $params;
-
-    /**
-     * The Moneris API token.
-     *
-     * @var string
-     */
-    protected $token;
 
     /**
      * Set up the test environment.
@@ -35,8 +21,6 @@ class MonerisTest extends TestCase
     {
         parent::setUp();
 
-        $this->id = 'store1';
-        $this->token = 'yesguy';
         $this->params = [
             'environment' => Moneris::ENV_TESTING
         ];

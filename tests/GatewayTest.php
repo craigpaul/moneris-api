@@ -15,32 +15,11 @@ class GatewayTest extends TestCase
     protected $gateway;
 
     /**
-     * The environment used for connecting to the Moneris API.
-     *
-     * @var string
-     */
-    protected $environment;
-
-    /**
-     * The Moneris store id.
-     *
-     * @var string
-     */
-    protected $id;
-
-    /**
      * The Moneris API parameters.
      *
      * @var array
      */
     protected $params;
-
-    /**
-     * The Moneris API token.
-     *
-     * @var string
-     */
-    protected $token;
 
     /**
      * Set up the test environment.
@@ -51,13 +30,7 @@ class GatewayTest extends TestCase
     {
         parent::setUp();
 
-        $this->id = 'store1';
-        $this->token = 'yesguy';
-        $this->environment = Moneris::ENV_TESTING;
-        $this->params = [
-            'environment' => $this->environment
-        ];
-
+        $this->params = ['environment' => $this->environment];
         $this->gateway = Moneris::create($this->id, $this->token, $this->params)->connect();
     }
 
