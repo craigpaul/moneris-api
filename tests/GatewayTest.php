@@ -3,7 +3,6 @@
 use CraigPaul\Moneris\Gateway;
 use CraigPaul\Moneris\Moneris;
 use CraigPaul\Moneris\Response;
-use CraigPaul\Moneris\Exceptions\ValidationException;
 
 class GatewayTest extends TestCase
 {
@@ -57,7 +56,7 @@ class GatewayTest extends TestCase
     public function it_can_make_a_purchase_and_receive_a_response()
     {
         $params = [
-            'order_id' => '1234-567890',
+            'order_id' => uniqid('1234-56789', true),
             'amount' => '1.00',
             'pan' => $this->visa,
             'expdate' => '2012',
@@ -66,5 +65,6 @@ class GatewayTest extends TestCase
         $response = $this->gateway->purchase($params);
 
         $this->assertEquals(Response::class, get_class($response));
+        $this->assertTrue($response->successful);
     }
 }
