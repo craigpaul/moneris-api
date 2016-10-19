@@ -11,7 +11,8 @@
     ],
     "require": {
         "php": ">=7.0",
-        "guzzlehttp/guzzle": "~6.0"
+        "guzzlehttp/guzzle": "~6.0",
+        "respect/validation": "^1.1.9"
     },
     "require-dev": {
         "phpunit/phpunit": "~5.0",
@@ -21,6 +22,11 @@
         "psr-4": {
             "CraigPaul\\Moneris\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/TestCase.php"
+        ]
     },
     "minimum-stability": "dev",
     "prefer-stable": true
