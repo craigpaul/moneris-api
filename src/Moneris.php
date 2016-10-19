@@ -70,7 +70,7 @@ class Moneris
      * @param string $token
      * @param array $params
      *
-     * @return static
+     * @return $this
      */
     public static function create(string $id, string $token, array $params = [])
     {
