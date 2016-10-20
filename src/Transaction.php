@@ -165,6 +165,7 @@ class Transaction
 
         if (isset($params['type'])) {
             switch ($params['type']) {
+                case 'card_verification':
                 case 'preauth':
                 case 'purchase':
                     $errors[] = Validator::set($params, 'order_id') ? null : 'Order Id not provided.';

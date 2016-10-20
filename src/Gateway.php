@@ -150,4 +150,23 @@ class Gateway
 
         return $this->transaction;
     }
+
+    /**
+     * Validate CVD and/or AVS prior to attempting a purchase.
+     *
+     * @param array $params
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function verify(array $params = [])
+    {
+        $params = array_merge($params, [
+            'type' => 'card_verification',
+            'crypt_type' => Crypt::SSL_ENABLED_MERCHANT,
+        ]);
+
+        $transaction = $this->transaction($params);
+
+        return $this->process($transaction);
+    }
 }
