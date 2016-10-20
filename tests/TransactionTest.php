@@ -41,7 +41,7 @@ class TransactionTest extends TestCase
             'type' => 'purchase',
             'order_id' => uniqid('1234-56789', true),
             'amount' => '1.00',
-            'pan' => $this->visa,
+            'credit_card' => $this->visa,
             'expdate' => '2012',
         ];
         $this->transaction = new Transaction($this->gateway, $this->params);
@@ -50,8 +50,12 @@ class TransactionTest extends TestCase
     /** @test */
     public function it_can_access_properties_of_the_class()
     {
+        $params = $this->params;
+        $params['pan'] = $params['credit_card'];
+        unset($params['credit_card']);
+
         $this->assertEquals($this->gateway, $this->transaction->gateway);
-        $this->assertEquals($this->params, $this->transaction->params);
+        $this->assertEquals($params, $this->transaction->params);
     }
 
     /** @test */
@@ -63,7 +67,7 @@ class TransactionTest extends TestCase
             'type' => 'purchase',
             'order_id' => $order,
             'amount' => '1.00',
-            'pan' => $card,
+            'credit_card' => $card,
             'expdate' => '2012',
         ]);
 

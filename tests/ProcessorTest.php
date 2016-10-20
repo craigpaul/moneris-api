@@ -45,7 +45,7 @@ class ProcessorTest extends TestCase
             'crypt_type' => Crypt::SSL_ENABLED_MERCHANT,
             'order_id' => uniqid('1234-56789', true),
             'amount' => '1.00',
-            'pan' => $this->visa,
+            'credit_card' => $this->visa,
             'expdate' => '2012',
         ];
         $this->transaction = new Transaction($this->gateway, $this->params);

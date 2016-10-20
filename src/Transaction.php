@@ -47,12 +47,11 @@ class Transaction
      *
      * @param \CraigPaul\Moneris\Gateway $gateway
      * @param array $params
-     * @param bool $prepare
      */
-    public function __construct(Gateway $gateway, array $params = [], $prepare = true)
+    public function __construct(Gateway $gateway, array $params = [])
     {
         $this->gateway = $gateway;
-        $this->params = $prepare ? $this->prepare($params) : $params;
+        $this->params = $this->prepare($params);
     }
 
     /**
@@ -84,8 +83,19 @@ class Transaction
             }
         }
 
-        if (isset($params['pan'])) {
-            $params['pan'] = preg_replace('/\D/', '', $params['pan']);
+        if (isset($params['credit_card'])) {
+            $params['pan'] = preg_replace('/\D/', '', $params['credit_card']);
+            unset($params['credit_card']);
+        }
+
+        if (isset($params['description'])) {
+            $params['dynamic_descriptor'] = $params['description'];
+            unset($params['description']);
+        }
+
+        if (isset($params['expiry_month']) && isset($params['expiry_year']) && !isset($params['expdate'])) {
+            $params['expdate'] = sprintf('%02%02d', $params['expiry_year'], $params['expiry_monthp']);
+            unset($params['expiry_year'], $params['expiry_month']);
         }
 
         return $params;

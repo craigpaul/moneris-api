@@ -58,7 +58,7 @@ class GatewayTest extends TestCase
         $params = [
             'order_id' => uniqid('1234-56789', true),
             'amount' => '1.00',
-            'pan' => $this->visa,
+            'credit_card' => $this->visa,
             'expdate' => '2012',
         ];
 
