@@ -86,6 +86,35 @@ class Gateway
     }
 
     /**
+     * Capture a pre-authorized a transaction.
+     *
+     * @param \CraigPaul\Moneris\Transaction|string $transaction
+     * @param string|null $order
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function capture($transaction, string $order = null, $amount = null)
+    {
+        if ($transaction instanceof Transaction) {
+            $order = $transaction->order();
+            $amount = $amount ?? $transaction->amount();
+            $transaction = $transaction->number();
+        }
+
+        $params = [
+            'type' => 'completion',
+            'crypt_type' => Crypt::SSL_ENABLED_MERCHANT,
+            'comp_amount' => $amount,
+            'txn_number' => $transaction,
+            'order_id' => $order,
+        ];
+
+        $transaction = $this->transaction($params);
+
+        return $this->process($transaction);
+    }
+
+    /**
      * Pre-authorize a purchase.
      *
      * @param array $params

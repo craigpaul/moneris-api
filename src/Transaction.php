@@ -231,6 +231,12 @@ class Transaction
                     $errors[] = Validator::set($params, 'txn_number') ? null : 'Transaction number not provided.';
 
                     break;
+                case 'completion':
+                    $errors[] = Validator::set($params, 'comp_amount') ? null : 'Amount not provided.';
+                    $errors[] = Validator::set($params, 'order_id') ? null : 'Order id not provided.';
+                    $errors[] = Validator::set($params, 'txn_number') ? null : 'Transaction number not provided.';
+
+                    break;
                 case 'refund':
                     $errors[] = Validator::set($params, 'amount') ? null : 'Amount not provided.';
                     $errors[] = Validator::set($params, 'order_id') ? null : 'Order id not provided.';
