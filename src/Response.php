@@ -7,6 +7,8 @@ use SimpleXMLElement;
 /**
  * CraigPaul\Moneris\Response
  *
+ * @property bool $failedAvs
+ * @property bool $failedCvd
  * @property null|int $status
  * @property bool $successful
  * @property \CraigPaul\Moneris\Transaction $transaction
@@ -18,7 +20,9 @@ class Response
     const ERROR                    = -23;
     const INVALID_TRANSACTION_DATA = 0;
 
-    const GLOBAL_ERROR_RECEIPT = -3;
+    const FAILED_ATTEMPT            = -1;
+    const CREATE_TRANSACTION_RECORD = -2;
+    const GLOBAL_ERROR_RECEIPT      = -3;
 
     const SYSTEM_UNAVAILABLE    = -14;
     const CARD_EXPIRED          = -15;
@@ -29,7 +33,33 @@ class Response
     const DECLINED              = -20;
     const NOT_AUTHORIZED        = -21;
 
-    const CVD = -4;
+    const CVD               = -4;
+    const CVD_NO_MATCH      = -5;
+    const CVD_NOT_PROCESSED = -6;
+    const CVD_MISSING       = -7;
+    const CVD_NOT_SUPPORTED = -8;
+
+    const AVS             = -9;
+    const AVS_POSTAL_CODE = -10;
+    const AVS_ADDRESS     = -11;
+    const AVS_NO_MATCH    = -12;
+    const AVS_TIMEOUT     = -13;
+
+    const POST_FRAUD = -22;
+
+    /**
+     * Determine if we have failed Address Verification Service verification.
+     *
+     * @var bool
+     */
+    protected $failedAvs = false;
+
+    /**
+     * Determine if we have failed Card Validation Digits verification.
+     *
+     * @var bool
+     */
+    protected $failedCvd = false;
 
     /**
      * The status code.
@@ -132,6 +162,7 @@ class Response
     {
         /** @var \SimpleXMLElement $receipt */
         $receipt = $this->transaction->response->receipt;
+        $gateway = $this->transaction->gateway;
 
         if ($receipt->ReceiptId === 'Global Error Receipt') {
             $this->status = Response::GLOBAL_ERROR_RECEIPT;
@@ -144,6 +175,48 @@ class Response
 
         if ($code >= 50 || $code === 0) {
             $this->handle($receipt);
+            $this->successful = false;
+
+            return $this;
+        }
+
+        $code = isset($receipt->AvsResultCode) ? (string)$receipt->AvsResultCode : false;
+
+        if ($gateway->avs && $code && $code !== 'null' && !in_array($code, $gateway->avsCodes)) {
+            switch ($code) {
+                case 'B':
+                case 'C':
+                    $this->status = Response::AVS_POSTAL_CODE;
+                    break;
+                case 'G':
+                case 'I':
+                case 'P':
+                case 'S':
+                case 'U':
+                case 'Z':
+                    $this->status = Response::AVS_ADDRESS;
+                    break;
+                case 'N':
+                    $this->status = Response::AVS_NO_MATCH;
+                    break;
+                case 'R':
+                    $this->status = Response::AVS_TIMEOUT;
+                    break;
+                default:
+                    $this->status = Response::AVS;
+            }
+
+            $this->failedAvs = true;
+            $this->successful = false;
+
+            return $this;
+        }
+
+        $code = isset($receipt->CvdResultCode) ? (string)$receipt->CvdResultCode : null;
+
+        if ($gateway->avs && !is_null($code) && $code !== 'null' && !in_array($code{1}, $gateway->cvdCodes)) {
+            $this->status = Response::CVD;
+            $this->failedCvd = true;
             $this->successful = false;
 
             return $this;

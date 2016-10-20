@@ -118,7 +118,31 @@ class Transaction
         $xml->addChild('api_token', $gateway->token);
 
         $type = $xml->addChild($params['type']);
+        $efraud = in_array(
+            $params['type'],
+            ['purchase', 'preauth', 'card_verification', 'cavv_purchase', 'cavv_preauth']
+        );
         unset($params['type']);
+
+        if ($gateway->cvd && $efraud) {
+            $cvd = $type->addChild('cvd_info');
+            $cvd->addChild('cvd_indicator', '1');
+            $cvd->addChild('cvd_value', $params['cvd']);
+            unset($params['cvd']);
+        }
+
+        if ($gateway->avs && $efraud) {
+            $avs = $type->addChild('avs_info');
+
+            foreach ($params as $key => $value) {
+                if (substr($key, 0, 4) !== 'avs_') {
+                    continue;
+                }
+
+                $avs->addChild($key, $value);
+                unset($params[$key]);
+            }
+        }
 
         foreach ($params as $key => $value) {
             $type->addChild($key, $value);
@@ -146,6 +170,16 @@ class Transaction
                     $errors[] = Validator::set($params, 'pan') ? null : 'Credit card number not provided.';
                     $errors[] = Validator::set($params, 'amount') ? null : 'Amount not provided.';
                     $errors[] = Validator::set($params, 'expdate') ? null : 'Expiry date not provided.';
+
+                    if ($this->gateway->avs) {
+                        $errors[] = Validator::set($params, 'avs_street_number') ? null : 'Street number not provided.';
+                        $errors[] = Validator::set($params, 'avs_street_name') ? null : 'Street name not provided.';
+                        $errors[] = Validator::set($params, 'avs_zipcode') ? null : 'Postal/Zip code not provided.';
+                    }
+
+                    if ($this->gateway->cvd) {
+                        $errors[] = Validator::set($params, 'cvd') ? null : 'CVD not provided.';
+                    }
 
                     break;
                 default:

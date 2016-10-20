@@ -5,13 +5,41 @@ namespace CraigPaul\Moneris;
 /**
  * CraigPaul\Moneris\Gateway
  *
+ * @property bool $avs
+ * @property-read array $avsCodes
+ * @property bool $cvd
+ * @property-read array $cvdCodes
+ * @property-read string $environment
  * @property-read string $id
  * @property-read string $token
- * @property-read string $environment
  */
 class Gateway
 {
     use Gettable;
+
+    /**
+     * Determine if we will use the Address Verification Service.
+     *
+     * @var bool
+     */
+    protected $avs = false;
+
+    /**
+     * @var array
+     */
+    protected $avsCodes = ['A', 'B', 'D', 'M', 'P', 'W', 'X', 'Y', 'Z'];
+
+    /**
+     * Determine if we will use the Card Validation Digits.
+     *
+     * @var bool
+     */
+    protected $cvd = false;
+
+    /**
+     * @var array
+     */
+    protected $cvdCodes = ['M', 'Y', 'P', 'S', 'U'];
 
     /**
      * The environment used for connecting to the Moneris API.

@@ -84,6 +84,16 @@ class Moneris
      */
     public function connect()
     {
-        return new Gateway($this->id, $this->token, $this->environment);
+        $gateway = new Gateway($this->id, $this->token, $this->environment);
+
+        if (isset($this->params['avs'])) {
+            $gateway->avs = boolval($this->params['avs']);
+        }
+
+        if (isset($this->params['cvd'])) {
+            $gateway->cvd = boolval($this->params['cvd']);
+        }
+
+        return $gateway;
     }
 }
