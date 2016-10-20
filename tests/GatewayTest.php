@@ -75,4 +75,13 @@ class GatewayTest extends TestCase
         $this->assertEquals(Response::class, get_class($response));
         $this->assertTrue($response->successful);
     }
+
+    /** @test */
+    public function it_can_verify_a_card_before_attempting_a_purchase_and_receive_a_response()
+    {
+        $response = $this->gateway->verify($this->params);
+
+        $this->assertEquals(Response::class, get_class($response));
+        $this->assertTrue($response->successful);
+    }
 }
