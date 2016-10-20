@@ -136,6 +136,33 @@ class Gateway
     }
 
     /**
+     * @param \CraigPaul\Moneris\Transaction|string $transaction
+     * @param string|null $order
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function refund($transaction, string $order = null, $amount = null)
+    {
+        if ($transaction instanceof Transaction) {
+            $order = $transaction->order();
+            $amount = $amount ?? $transaction->amount();
+            $transaction = $transaction->number();
+        }
+
+        $params = [
+            'type' => 'refund',
+            'crypt_type' => Crypt::SSL_ENABLED_MERCHANT,
+            'amount' => $amount,
+            'txn_number' => $transaction,
+            'order_id' => $order,
+        ];
+
+        $transaction = $this->transaction($params);
+
+        return $this->process($transaction);
+    }
+
+    /**
      * Get or create a new Transaction instance.
      *
      * @param array|null $params

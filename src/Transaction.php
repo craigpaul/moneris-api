@@ -55,6 +55,20 @@ class Transaction
     }
 
     /**
+     * Retrieve the amount for the transaction. The is only available on certain transaction types.
+     *
+     * @return string|null
+     */
+    public function amount()
+    {
+        if (isset($this->params['amount'])) {
+            return $this->params['amount'];
+        }
+
+        return null;
+    }
+
+    /**
      * Check that the required parameters have not been provided to the transaction.
      *
      * @return bool
@@ -213,6 +227,12 @@ class Transaction
 
                     break;
                 case 'purchasecorrection':
+                    $errors[] = Validator::set($params, 'order_id') ? null : 'Order id not provided.';
+                    $errors[] = Validator::set($params, 'txn_number') ? null : 'Transaction number not provided.';
+
+                    break;
+                case 'refund':
+                    $errors[] = Validator::set($params, 'amount') ? null : 'Amount not provided.';
                     $errors[] = Validator::set($params, 'order_id') ? null : 'Order id not provided.';
                     $errors[] = Validator::set($params, 'txn_number') ? null : 'Transaction number not provided.';
 
