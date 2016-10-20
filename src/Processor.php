@@ -55,6 +55,7 @@ class Processor
             $response = new Response($transaction);
             $response->status = Response::INVALID_TRANSACTION_DATA;
             $response->successful = false;
+            $response->errors = $transaction->errors;
 
             return $response;
         }

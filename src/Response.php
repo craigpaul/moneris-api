@@ -7,6 +7,7 @@ use SimpleXMLElement;
 /**
  * CraigPaul\Moneris\Response
  *
+ * @property array $errors
  * @property bool $failedAvs
  * @property bool $failedCvd
  * @property null|int $status
@@ -46,6 +47,13 @@ class Response
     const AVS_TIMEOUT     = -13;
 
     const POST_FRAUD = -22;
+
+    /**
+     * Any errors that arise from processing a transaction.
+     *
+     * @var array
+     */
+    protected $errors = [];
 
     /**
      * Determine if we have failed Address Verification Service verification.
