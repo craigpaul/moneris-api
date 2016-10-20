@@ -104,4 +104,14 @@ class GatewayTest extends TestCase
         $this->assertEquals(Response::class, get_class($response));
         $this->assertTrue($response->successful);
     }
+
+    /** @test */
+    public function it_can_capture_a_pre_authorized_transaction_and_receive_a_response()
+    {
+        $response = $this->gateway->preauth($this->params);
+        $response = $this->gateway->capture($response->transaction);
+
+        $this->assertEquals(Response::class, get_class($response));
+        $this->assertTrue($response->successful);
+    }
 }
