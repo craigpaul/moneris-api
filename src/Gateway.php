@@ -15,7 +15,7 @@ namespace CraigPaul\Moneris;
  */
 class Gateway
 {
-    use Gettable;
+    use Gettable, Settable;
 
     /**
      * Determine if we will use the Address Verification Service.
