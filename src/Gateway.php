@@ -27,8 +27,6 @@ class Gateway
      */
     protected $id;
 
-    protected $testing = false;
-
     /**
      * The Moneris API Token.
      *
