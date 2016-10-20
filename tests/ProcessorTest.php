@@ -69,4 +69,38 @@ class ProcessorTest extends TestCase
 
         $this->assertTrue($response->successful);
     }
+
+    /** @test */
+    public function it_can_submit_a_avs_secured_request_to_the_moneris_api()
+    {
+        $params = ['environment' => Moneris::ENV_TESTING, 'avs' => true];
+        $gateway = Moneris::create($this->id, $this->token, $params)->connect();
+        $response = $gateway->purchase([
+            'order_id' => uniqid('1234-56789', true),
+            'amount' => '1.00',
+            'credit_card' => $this->visa,
+            'expdate' => '2012',
+            'avs_street_number' => '123',
+            'avs_street_name' => 'Fake Street',
+            'avs_zipcode' => 'X0X0X0',
+        ]);
+
+        $this->assertTrue($response->successful);
+    }
+
+    /** @test */
+    public function it_can_submit_a_cvd_secured_request_to_the_moneris_api()
+    {
+        $params = ['environment' => Moneris::ENV_TESTING, 'cvd' => true];
+        $gateway = Moneris::create($this->id, $this->token, $params)->connect();
+        $response = $gateway->purchase([
+            'order_id' => uniqid('1234-56789', true),
+            'amount' => '1.00',
+            'credit_card' => $this->visa,
+            'expdate' => '2012',
+            'cvd' => '111'
+        ]);
+
+        $this->assertTrue($response->successful);
+    }
 }
