@@ -94,4 +94,14 @@ class GatewayTest extends TestCase
         $this->assertEquals(Response::class, get_class($response));
         $this->assertTrue($response->successful);
     }
+
+    /** @test */
+    public function it_can_refund_a_transaction_after_making_a_purchase_and_receive_a_response()
+    {
+        $response = $this->gateway->purchase($this->params);
+        $response = $this->gateway->refund($response->transaction);
+
+        $this->assertEquals(Response::class, get_class($response));
+        $this->assertTrue($response->successful);
+    }
 }
