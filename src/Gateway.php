@@ -136,6 +136,8 @@ class Gateway
     }
 
     /**
+     * Refund a transaction.
+     *
      * @param \CraigPaul\Moneris\Transaction|string $transaction
      * @param string|null $order
      *
