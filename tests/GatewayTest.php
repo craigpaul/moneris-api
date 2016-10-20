@@ -29,8 +29,14 @@ class GatewayTest extends TestCase
     {
         parent::setUp();
 
-        $this->params = ['environment' => $this->environment];
-        $this->gateway = Moneris::create($this->id, $this->token, $this->params)->connect();
+        $params = ['environment' => $this->environment];
+        $this->gateway = Moneris::create($this->id, $this->token, $params)->connect();
+        $this->params = [
+            'order_id' => uniqid('1234-56789', true),
+            'amount' => '1.00',
+            'credit_card' => $this->visa,
+            'expdate' => '2012',
+        ];
     }
 
     /** @test */
@@ -55,14 +61,16 @@ class GatewayTest extends TestCase
     /** @test */
     public function it_can_make_a_purchase_and_receive_a_response()
     {
-        $params = [
-            'order_id' => uniqid('1234-56789', true),
-            'amount' => '1.00',
-            'credit_card' => $this->visa,
-            'expdate' => '2012',
-        ];
+        $response = $this->gateway->purchase($this->params);
 
-        $response = $this->gateway->purchase($params);
+        $this->assertEquals(Response::class, get_class($response));
+        $this->assertTrue($response->successful);
+    }
+
+    /** @test */
+    public function it_can_pre_authorize_a_purchase_and_receive_a_response()
+    {
+        $response = $this->gateway->preauth($this->params);
 
         $this->assertEquals(Response::class, get_class($response));
         $this->assertTrue($response->successful);
