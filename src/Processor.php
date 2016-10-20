@@ -14,7 +14,7 @@ class Processor
         'host' => 'esqa.moneris.com',
         'port' => '443',
         'url' => '/gateway2/servlet/MpgRequest',
-        'api_version' => 'PHP - 2.5.1',
+        'api_version' => 'PHP - 2.5.6',
         'timeout' => '60',
     ];
 
