@@ -169,4 +169,31 @@ class Gateway
 
         return $this->process($transaction);
     }
+
+    /**
+     * Void a transaction.
+     *
+     * @param \CraigPaul\Moneris\Transaction|string $transaction
+     * @param string|null $order
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function void($transaction, string $order = null)
+    {
+        if ($transaction instanceof Transaction) {
+            $order = $transaction->order();
+            $transaction = $transaction->number();
+        }
+
+        $params = [
+            'type' => 'purchasecorrection',
+            'crypt_type' => Crypt::SSL_ENABLED_MERCHANT,
+            'txn_number' => $transaction,
+            'order_id' => $order,
+        ];
+
+        $transaction = $this->transaction($params);
+
+        return $this->process($transaction);
+    }
 }

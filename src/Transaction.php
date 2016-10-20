@@ -10,7 +10,7 @@ use SimpleXMLElement;
  * @property-read array $errors
  * @property-read \CraigPaul\Moneris\Gateway $gateway
  * @property-read array $params
- * @property SimpleXMLElement $response
+ * @property SimpleXMLElement|null $response
  */
 class Transaction
 {
@@ -38,9 +38,9 @@ class Transaction
     protected $params;
 
     /**
-     * @var SimpleXMLElement
+     * @var SimpleXMLElement|null
      */
-    protected $response;
+    protected $response = null;
 
     /**
      * Create a new Transaction instance.
@@ -62,6 +62,34 @@ class Transaction
     public function invalid()
     {
         return !$this->valid();
+    }
+
+    /**
+     * Retrieve the transaction number, assuming the transaction has been processed.
+     *
+     * @return null|string
+     */
+    public function number()
+    {
+        if (is_null($this->response)) {
+            return null;
+        }
+
+        return (string)$this->response->receipt->TransID;
+    }
+
+    /**
+     * Retrieve the order id for the transaction. The is only available on certain transaction types.
+     *
+     * @return string|null
+     */
+    public function order()
+    {
+        if (isset($this->params['order_id'])) {
+            return $this->params['order_id'];
+        }
+
+        return null;
     }
 
     /**
@@ -182,6 +210,11 @@ class Transaction
                     if ($this->gateway->cvd) {
                         $errors[] = Validator::set($params, 'cvd') ? null : 'CVD not provided.';
                     }
+
+                    break;
+                case 'purchasecorrection':
+                    $errors[] = Validator::set($params, 'order_id') ? null : 'Order id not provided.';
+                    $errors[] = Validator::set($params, 'txn_number') ? null : 'Transaction number not provided.';
 
                     break;
                 default:
