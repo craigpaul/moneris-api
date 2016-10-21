@@ -5,18 +5,24 @@ namespace CraigPaul\Moneris;
 /**
  * CraigPaul\Moneris\CreditCard
  *
+ * @property-read int $crypt
+ * @property-read \CraigPaul\Moneris\Customer|null $customer
  * @property-read string $expiry
  * @property-read string $number
- * @property-read int $crypt
  */
 class CreditCard
 {
     use Gettable;
 
     /**
-     * @var string
+     * @var int
      */
-    protected $number;
+    protected $crypt;
+
+    /**
+     * @var \CraigPaul\Moneris\Customer|null
+     */
+    protected $customer = null;
 
     /**
      * @var string
@@ -24,9 +30,9 @@ class CreditCard
     protected $expiry;
 
     /**
-     * @var int
+     * @var string
      */
-    protected $crypt;
+    protected $number;
 
     /**
      * Create a new CreditCard instance.
@@ -42,6 +48,20 @@ class CreditCard
         $this->number = $number;
         $this->expiry = $expiry;
         $this->crypt = $crypt;
+    }
+
+    /**
+     * Attach a provided customer to the CreditCard instance.
+     *
+     * @param \CraigPaul\Moneris\Customer $customer
+     *
+     * @return $this
+     */
+    public function attach(Customer $customer)
+    {
+        $this->customer = $customer;
+
+        return $this;
     }
 
     /**
