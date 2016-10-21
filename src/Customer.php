@@ -12,7 +12,7 @@ namespace CraigPaul\Moneris;
  */
 class Customer
 {
-    use Gettable;
+    use Gettable, Settable;
 
     /**
      * The Customer ID.
