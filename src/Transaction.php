@@ -248,6 +248,12 @@ class Transaction
                     $errors[] = Validator::set($params, 'expdate') ? null : 'Expiry date not provided.';
 
                     break;
+                case 'res_update_cc':
+                    $errors[] = Validator::set($params, 'data_key') ? null : 'Data key not provided.';
+                    $errors[] = Validator::set($params, 'pan') ? null : 'Credit card number not provided.';
+                    $errors[] = Validator::set($params, 'expdate') ? null : 'Expiry date not provided.';
+
+                    break;
                 default:
                     $errors[] = $params['type'].' is not a supported transaction type.';
             }
