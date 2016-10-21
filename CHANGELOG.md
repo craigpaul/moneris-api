@@ -1,5 +1,45 @@
 #Moneris API Changelog
 
+###0.2.0 (2016-10-21)
+
+####Changed
+
+- Removes useless import [`719ae5c414`](https://github.com/craigpaul/moneris-api/commit/719ae5c414)
+- Removes handle method and adds receipt method [`a8c9f4237a`](https://github.com/craigpaul/moneris-api/commit/a8c9f4237a)
+- Changes static moneris constructor to return Gateway [`61145f4bb0`](https://github.com/craigpaul/moneris-api/commit/61145f4bb0)
+
+####Added
+
+- Adds test for receipt method [`4329c15dea`](https://github.com/craigpaul/moneris-api/commit/4329c15dea)  
+- Adds get expiring test [`4178cb8dcd`](https://github.com/craigpaul/moneris-api/commit/4178cb8dcd) 
+- Adds get expiring functionality [`3e6358b3aa`](https://github.com/craigpaul/moneris-api/commit/3e6358b3aa) 
+- Adds full lookup test [`4a7947b94a`](https://github.com/craigpaul/moneris-api/commit/4a7947b94a) 
+- Adds full lookup functionality [`47fe25265b`](https://github.com/craigpaul/moneris-api/commit/47fe25265b) 
+- Adds masked lookup test [`bee49511b4`](https://github.com/craigpaul/moneris-api/commit/bee49511b4) 
+- Adds masked lookup functionality [`80025a8403`](https://github.com/craigpaul/moneris-api/commit/80025a8403) 
+- Adds tokenization test [`4378b33c5d`](https://github.com/craigpaul/moneris-api/commit/4378b33c5d) 
+- Adds tokenization functionality [`97b5fc1621`](https://github.com/craigpaul/moneris-api/commit/97b5fc1621) 
+- Adds test helpers and var-dumper for testing purposes [`ed0c92baf8`](https://github.com/craigpaul/moneris-api/commit/ed0c92baf8) 
+- Adds delete credit card test [`4a930e790c`](https://github.com/craigpaul/moneris-api/commit/4a930e790c) 
+- Adds delete credit card functionality [`be50122c87`](https://github.com/craigpaul/moneris-api/commit/be50122c87) 
+- Adds update credit card test [`eb342d11e1`](https://github.com/craigpaul/moneris-api/commit/eb342d11e1) 
+- Adds update credit card functionality [`c38a72b4f0`](https://github.com/craigpaul/moneris-api/commit/c38a72b4f0) 
+- Adds case for updating credit cards [`445ed72a1a`](https://github.com/craigpaul/moneris-api/commit/445ed72a1a) 
+- Adds settable trait [`cb42fa92ec`](https://github.com/craigpaul/moneris-api/commit/cb42fa92ec) 
+- Adds set up and add method test [`7401861c64`](https://github.com/craigpaul/moneris-api/commit/7401861c64) 
+- Adds add card method. Extends default gateway [`d1522e2c71`](https://github.com/craigpaul/moneris-api/commit/d1522e2c71) 
+- Adds transaction validator for res_add_cc [`e4192498c4`](https://github.com/craigpaul/moneris-api/commit/e4192498c4)  
+- Adds instantiation tests [`9d3a6706a7`](https://github.com/craigpaul/moneris-api/commit/9d3a6706a7) 
+- Adds static create constructor [`93bc912a78`](https://github.com/craigpaul/moneris-api/commit/93bc912a78) 
+- Adds docblock to cards method [`7f18cc0b01`](https://github.com/craigpaul/moneris-api/commit/7f18cc0b01) 
+- Adds customer attaching test [`cc6a054364`](https://github.com/craigpaul/moneris-api/commit/cc6a054364) 
+- Adds customer attaching functionality [`32cb5d094c`](https://github.com/craigpaul/moneris-api/commit/32cb5d094c) 
+- Adds settable trait [`c9536e7057`](https://github.com/craigpaul/moneris-api/commit/c9536e7057) 
+- Adds test for customer instantiation [`51b4aaabda`](https://github.com/craigpaul/moneris-api/commit/51b4aaabda) 
+- Adds customer object [`03ea0dca79`](https://github.com/craigpaul/moneris-api/commit/03ea0dca79) 
+- Adds instantiation tests for CreditCard [`8b6fedd5f9`](https://github.com/craigpaul/moneris-api/commit/8b6fedd5f9) 
+- Adds credit card object [`9b4536697a`](https://github.com/craigpaul/moneris-api/commit/9b4536697a)  
+
 ###0.1.0 (2016-10-20)
 
 ####Changed
