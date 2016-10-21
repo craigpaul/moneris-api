@@ -55,4 +55,25 @@ class VaultTest extends TestCase
         $this->assertTrue($response->successful);
         $this->assertNotNull($receipt->DataKey);
     }
+
+    /** @test */
+    public function it_can_update_a_credit_card_in_the_moneris_vault_and_returns_a_data_key_for_storage()
+    {
+        $card = CreditCard::create($this->visa, '2012');
+
+        $response = $this->vault->add($card);
+        $key = $response->receipt()->DataKey;
+
+        $this->assertEquals('2012', $response->transaction->params['expdate']);
+
+        $card->expiry = '2112';
+
+        $response = $this->vault->update($key, $card);
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertNotNull($receipt->DataKey);
+        $this->assertEquals($key, $receipt->DataKey);
+        $this->assertEquals('2112', $response->transaction->params['expdate']);
+    }
 }
