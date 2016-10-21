@@ -6,13 +6,13 @@ namespace CraigPaul\Moneris;
  * CraigPaul\Moneris\CreditCard
  *
  * @property-read int $crypt
- * @property-read \CraigPaul\Moneris\Customer|null $customer
- * @property-read string $expiry
- * @property-read string $number
+ * @property \CraigPaul\Moneris\Customer|null $customer
+ * @property string $expiry
+ * @property string $number
  */
 class CreditCard
 {
-    use Gettable;
+    use Gettable, Settable;
 
     /**
      * @var int
