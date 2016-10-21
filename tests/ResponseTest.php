@@ -89,4 +89,21 @@ class ResponseTest extends TestCase
 
         $this->assertTrue($response->successful);
     }
+
+    /** @test */
+    public function it_can_receive_a_receipt_from_a_properly_processed_transaction()
+    {
+        $response = Processor::process($this->transaction);
+
+        /** @var \CraigPaul\Moneris\Response $response */
+        $response = $response->validate();
+        $receipt = $response->receipt();
+
+        $this->assertNotNull($receipt);
+        $this->assertEquals(SimpleXMLElement::class, get_class($receipt));
+        $this->assertEquals($this->params['order_id'], $receipt->ReceiptId);
+        $this->assertObjectHasAttribute('TransID', $receipt);
+        $this->assertObjectHasAttribute('ReferenceNum', $receipt);
+        $this->assertObjectHasAttribute('Complete', $receipt);
+    }
 }
