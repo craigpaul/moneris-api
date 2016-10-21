@@ -43,4 +43,18 @@ class Vault
         $this->token = $token;
         $this->environment = $environment;
     }
+
+    /**
+     * Create a new Vault instance.
+     *
+     * @param string $id
+     * @param string $token
+     * @param string $environment
+     *
+     * @return $this
+     */
+    public static function create(string $id, string $token, string $environment)
+    {
+        return new static($id, $token, $environment);
+    }
 }
