@@ -132,4 +132,21 @@ class VaultTest extends TestCase
         $this->assertEquals($beginning, substr($receipt->ResolveData->masked_pan, 0, 4));
         $this->assertEquals($end, substr($receipt->ResolveData->masked_pan, -4, 4));
     }
+
+    /** @test */
+    public function it_can_peek_into_the_vault_and_retrieve_a_full_credit_card_from_the_moneris_vault_with_a_valid_data_key()
+    {
+        $card = CreditCard::create($this->visa, '2012');
+
+        $response = $this->vault->add($card);
+        $key = $response->receipt()->DataKey;
+
+        $response = $this->vault->peek($key, true);
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertNotNull($receipt->DataKey);
+        $this->assertEquals('2012', $receipt->ResolveData->expdate);
+        $this->assertEquals($this->visa, $receipt->ResolveData->pan);
+    }
 }
