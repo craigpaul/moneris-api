@@ -2,7 +2,6 @@
 
 namespace CraigPaul\Moneris;
 
-use SimpleXMLElement;
 
 /**
  * CraigPaul\Moneris\Response
