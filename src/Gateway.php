@@ -114,6 +114,11 @@ class Gateway
         return $this->process($transaction);
     }
 
+    /**
+     * Create a new Vault instance.
+     *
+     * @return \CraigPaul\Moneris\Vault
+     */
     public function cards()
     {
         return new Vault($this->id, $this->token, $this->environment);
