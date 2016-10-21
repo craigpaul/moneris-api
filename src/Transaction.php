@@ -226,6 +226,7 @@ class Transaction
                     }
 
                     break;
+                case 'res_tokenize_cc':
                 case 'purchasecorrection':
                     $errors[] = Validator::set($params, 'order_id') ? null : 'Order id not provided.';
                     $errors[] = Validator::set($params, 'txn_number') ? null : 'Transaction number not provided.';

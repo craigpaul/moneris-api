@@ -83,6 +83,33 @@ class Vault extends Gateway
     }
 
     /**
+     * Tokenize a previous transaction to save the credit
+     * card used in the Moneris Vault.
+     *
+     * @param $transaction
+     * @param string|null $order
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function tokenize($transaction, string $order = null)
+    {
+        if ($transaction instanceof Transaction) {
+            $order = $transaction->order();
+            $transaction = $transaction->number();
+        }
+
+        $params = [
+            'type' => 'res_tokenize_cc',
+            'txn_number' => $transaction,
+            'order_id' => $order,
+        ];
+
+        $transaction = $this->transaction($params);
+
+        return $this->process($transaction);
+    }
+
+    /**
      * Update an existing credit card in the Vault.
      *
      * @param string $key
