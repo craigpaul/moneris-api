@@ -10,7 +10,7 @@ use SimpleXMLElement;
  * @property-read array $errors
  * @property-read \CraigPaul\Moneris\Gateway $gateway
  * @property-read array $params
- * @property SimpleXMLElement|null $response
+ * @property \SimpleXMLElement|null $response
  */
 class Transaction
 {
@@ -38,7 +38,7 @@ class Transaction
     protected $params;
 
     /**
-     * @var SimpleXMLElement|null
+     * @var \SimpleXMLElement|null
      */
     protected $response = null;
 
@@ -241,6 +241,11 @@ class Transaction
                     $errors[] = Validator::set($params, 'amount') ? null : 'Amount not provided.';
                     $errors[] = Validator::set($params, 'order_id') ? null : 'Order id not provided.';
                     $errors[] = Validator::set($params, 'txn_number') ? null : 'Transaction number not provided.';
+
+                    break;
+                case 'res_add_cc':
+                    $errors[] = Validator::set($params, 'pan') ? null : 'Credit card number not provided.';
+                    $errors[] = Validator::set($params, 'expdate') ? null : 'Expiry date not provided.';
 
                     break;
                 default:
