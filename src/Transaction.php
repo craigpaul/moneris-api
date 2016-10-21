@@ -256,6 +256,7 @@ class Transaction
 
                     break;
                 case 'res_delete':
+                case 'res_lookup_masked':
                     $errors[] = Validator::set($params, 'data_key') ? null : 'Data key not provided.';
 
                     break;

@@ -83,6 +83,26 @@ class Vault extends Gateway
     }
 
     /**
+     * Peek into the Moneris Vault and retrieve a credit card
+     * profile associated with a given data key.
+     *
+     * @param string $key
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function peek(string $key)
+    {
+        $params = [
+            'type' => 'res_lookup_masked',
+            'data_key' => $key,
+        ];
+
+        $transaction = $this->transaction($params);
+
+        return $this->process($transaction);
+    }
+
+    /**
      * Tokenize a previous transaction to save the credit
      * card used in the Moneris Vault.
      *
