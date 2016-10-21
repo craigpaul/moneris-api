@@ -76,4 +76,20 @@ class VaultTest extends TestCase
         $this->assertEquals($key, $receipt->DataKey);
         $this->assertEquals('2112', $response->transaction->params['expdate']);
     }
+
+    /** @test */
+    public function it_can_delete_a_credit_card_from_the_moneris_vault_and_returns_a_data_key_for_storage()
+    {
+        $card = CreditCard::create($this->visa, '2012');
+
+        $response = $this->vault->add($card);
+        $key = $response->receipt()->DataKey;
+
+        $response = $this->vault->delete($key);
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertNotNull($receipt->DataKey);
+        $this->assertEquals($key, $receipt->DataKey);
+    }
 }
