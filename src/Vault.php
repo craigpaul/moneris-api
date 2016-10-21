@@ -59,4 +59,25 @@ class Vault extends Gateway
     {
         return new static($id, $token, $environment);
     }
+
+    /**
+     * @param string $key
+     * @param \CraigPaul\Moneris\CreditCard $card
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function update(string $key, CreditCard $card)
+    {
+        $params = [
+            'type' => 'res_update_cc',
+            'data_key' => $key,
+            'crypt_type' => $card->crypt,
+            'pan' => $card->number,
+            'expdate' => $card->expiry,
+        ];
+
+        $transaction = $this->transaction($params);
+
+        return $this->process($transaction);
+    }
 }
