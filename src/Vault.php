@@ -9,24 +9,9 @@ namespace CraigPaul\Moneris;
  * @property-read string $id
  * @property-read string $token
  */
-class Vault
+class Vault extends Gateway
 {
     use Gettable;
-
-    /**
-     * @var string
-     */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $token;
-
-    /**
-     * @var string
-     */
-    protected $environment;
 
     /**
      * Create a new Vault instance.
@@ -39,9 +24,26 @@ class Vault
      */
     public function __construct(string $id, string $token, string $environment)
     {
-        $this->id = $id;
-        $this->token = $token;
-        $this->environment = $environment;
+        parent::__construct($id, $token, $environment);
+    }
+
+    /**
+     * @param \CraigPaul\Moneris\CreditCard $card
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function add(CreditCard $card)
+    {
+        $params = [
+            'type' => 'res_add_cc',
+            'crypt_type' => $card->crypt,
+            'pan' => $card->number,
+            'expdate' => $card->expiry,
+        ];
+
+        $transaction = $this->transaction($params);
+
+        return $this->process($transaction);
     }
 
     /**
