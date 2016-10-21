@@ -28,6 +28,8 @@ class Vault extends Gateway
     }
 
     /**
+     * Add a credit card to the Vault.
+     *
      * @param \CraigPaul\Moneris\CreditCard $card
      *
      * @return \CraigPaul\Moneris\Response
@@ -39,6 +41,26 @@ class Vault extends Gateway
             'crypt_type' => $card->crypt,
             'pan' => $card->number,
             'expdate' => $card->expiry,
+        ];
+
+        $transaction = $this->transaction($params);
+
+        return $this->process($transaction);
+    }
+
+    /**
+     * Delete a credit card from the Vault.
+     *
+     * @param string $key
+     * @param \CraigPaul\Moneris\CreditCard $card
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function delete(string $key)
+    {
+        $params = [
+            'type' => 'res_delete',
+            'data_key' => $key,
         ];
 
         $transaction = $this->transaction($params);
@@ -61,6 +83,8 @@ class Vault extends Gateway
     }
 
     /**
+     * Update an existing credit card in the Vault.
+     *
      * @param string $key
      * @param \CraigPaul\Moneris\CreditCard $card
      *

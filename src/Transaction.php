@@ -254,6 +254,10 @@ class Transaction
                     $errors[] = Validator::set($params, 'expdate') ? null : 'Expiry date not provided.';
 
                     break;
+                case 'res_delete':
+                    $errors[] = Validator::set($params, 'data_key') ? null : 'Data key not provided.';
+
+                    break;
                 default:
                     $errors[] = $params['type'].' is not a supported transaction type.';
             }
