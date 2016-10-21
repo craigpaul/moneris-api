@@ -207,6 +207,8 @@ class Transaction
 
         if (isset($params['type'])) {
             switch ($params['type']) {
+                case 'res_get_expiring':
+                    break;
                 case 'card_verification':
                 case 'preauth':
                 case 'purchase':

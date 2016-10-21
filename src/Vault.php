@@ -83,6 +83,20 @@ class Vault extends Gateway
     }
 
     /**
+     * Get all expiring credit cards from the Moneris Vault.
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function expiring()
+    {
+        $params = ['type' => 'res_get_expiring'];
+
+        $transaction = $this->transaction($params);
+
+        return $this->process($transaction);
+    }
+
+    /**
      * Peek into the Moneris Vault and retrieve a credit card
      * profile associated with a given data key.
      *
