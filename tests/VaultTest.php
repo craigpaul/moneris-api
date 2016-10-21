@@ -149,4 +149,23 @@ class VaultTest extends TestCase
         $this->assertEquals('2012', $receipt->ResolveData->expdate);
         $this->assertEquals($this->visa, $receipt->ResolveData->pan);
     }
+
+    /** @test */
+    public function it_can_retrieve_all_expiring_credit_cards_from_the_moneris_vault()
+    {
+        $expiry = date('ym', strtotime('today + 10 days'));
+
+        $card = CreditCard::create($this->visa, $expiry);
+        $this->vault->add($card);
+        $card = CreditCard::create($this->mastercard, $expiry);
+        $this->vault->add($card);
+        $card = CreditCard::create($this->amex, $expiry);
+        $this->vault->add($card);
+
+        $response = $this->vault->expiring();
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertGreaterThan(0, count($receipt->ResolveData));
+    }
 }
