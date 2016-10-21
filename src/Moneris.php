@@ -70,11 +70,13 @@ class Moneris
      * @param string $token
      * @param array $params
      *
-     * @return $this
+     * @return \CraigPaul\Moneris\Gateway
      */
     public static function create(string $id, string $token, array $params = [])
     {
-        return new static($id, $token, $params);
+        $moneris = new static($id, $token, $params);
+
+        return $moneris->connect();
     }
 
     /**

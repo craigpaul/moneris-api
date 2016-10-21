@@ -30,7 +30,7 @@ class GatewayTest extends TestCase
         parent::setUp();
 
         $params = ['environment' => $this->environment];
-        $this->gateway = Moneris::create($this->id, $this->token, $params)->connect();
+        $this->gateway = Moneris::create($this->id, $this->token, $params);
         $this->params = [
             'order_id' => uniqid('1234-56789', true),
             'amount' => '1.00',

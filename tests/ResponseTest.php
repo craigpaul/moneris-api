@@ -46,7 +46,7 @@ class ResponseTest extends TestCase
         parent::setUp();
 
         $this->params = ['environment' => Moneris::ENV_TESTING];
-        $this->gateway = Moneris::create($this->id, $this->token, $this->params)->connect();
+        $this->gateway = Moneris::create($this->id, $this->token, $this->params);
         $this->params = [
             'type' => 'purchase',
             'crypt_type' => Crypt::SSL_ENABLED_MERCHANT,

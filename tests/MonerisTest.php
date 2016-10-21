@@ -37,15 +37,14 @@ class MonerisTest extends TestCase
     }
 
     /** @test */
-    public function it_can_instantiate_via_a_static_create_method()
+    public function it_can_instantiate_via_a_static_create_method_and_return_the_gateway()
     {
-        $moneris = Moneris::create($this->id, $this->token, $this->params);
+        $gateway = Moneris::create($this->id, $this->token, $this->params);
 
-        $this->assertEquals(Moneris::class, get_class($moneris));
-        $this->assertObjectHasAttribute('id', $moneris);
-        $this->assertObjectHasAttribute('token', $moneris);
-        $this->assertObjectHasAttribute('environment', $moneris);
-        $this->assertObjectHasAttribute('params', $moneris);
+        $this->assertEquals(Gateway::class, get_class($gateway));
+        $this->assertObjectHasAttribute('id', $gateway);
+        $this->assertObjectHasAttribute('token', $gateway);
+        $this->assertObjectHasAttribute('environment', $gateway);
     }
 
     /** @test */

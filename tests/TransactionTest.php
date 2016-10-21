@@ -36,7 +36,7 @@ class TransactionTest extends TestCase
         parent::setUp();
 
         $this->params = ['environment' => Moneris::ENV_TESTING];
-        $this->gateway = Moneris::create($this->id, $this->token, $this->params)->connect();
+        $this->gateway = Moneris::create($this->id, $this->token, $this->params);
         $this->params = [
             'type' => 'purchase',
             'order_id' => uniqid('1234-56789', true),

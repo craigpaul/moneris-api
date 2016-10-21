@@ -39,7 +39,7 @@ class ProcessorTest extends TestCase
         parent::setUp();
 
         $this->params = ['environment' => Moneris::ENV_TESTING];
-        $this->gateway = Moneris::create($this->id, $this->token, $this->params)->connect();
+        $this->gateway = Moneris::create($this->id, $this->token, $this->params);
         $this->params = [
             'type' => 'purchase',
             'crypt_type' => Crypt::SSL_ENABLED_MERCHANT,
@@ -74,7 +74,7 @@ class ProcessorTest extends TestCase
     public function it_can_submit_a_avs_secured_request_to_the_moneris_api()
     {
         $params = ['environment' => Moneris::ENV_TESTING, 'avs' => true];
-        $gateway = Moneris::create($this->id, $this->token, $params)->connect();
+        $gateway = Moneris::create($this->id, $this->token, $params);
         $response = $gateway->purchase([
             'order_id' => uniqid('1234-56789', true),
             'amount' => '1.00',
@@ -92,7 +92,7 @@ class ProcessorTest extends TestCase
     public function it_can_submit_a_cvd_secured_request_to_the_moneris_api()
     {
         $params = ['environment' => Moneris::ENV_TESTING, 'cvd' => true];
-        $gateway = Moneris::create($this->id, $this->token, $params)->connect();
+        $gateway = Moneris::create($this->id, $this->token, $params);
         $response = $gateway->purchase([
             'order_id' => uniqid('1234-56789', true),
             'amount' => '1.00',
