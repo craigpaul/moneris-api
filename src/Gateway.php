@@ -114,6 +114,11 @@ class Gateway
         return $this->process($transaction);
     }
 
+    public function cards()
+    {
+        return new Vault($this->id, $this->token, $this->environment);
+    }
+
     /**
      * Pre-authorize a purchase.
      *

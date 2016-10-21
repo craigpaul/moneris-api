@@ -1,5 +1,6 @@
 <?php
 
+use CraigPaul\Moneris\Vault;
 use CraigPaul\Moneris\Gateway;
 use CraigPaul\Moneris\Moneris;
 use CraigPaul\Moneris\Response;
@@ -113,5 +114,16 @@ class GatewayTest extends TestCase
 
         $this->assertEquals(Response::class, get_class($response));
         $this->assertTrue($response->successful);
+    }
+
+    /** @test */
+    public function it_can_access_the_vault_functionality_to_handle_credit_card_data()
+    {
+        $vault = $this->gateway->cards();
+
+        $this->assertEquals(Vault::class, get_class($vault));
+        $this->assertObjectHasAttribute('id', $vault);
+        $this->assertObjectHasAttribute('token', $vault);
+        $this->assertObjectHasAttribute('environment', $vault);
     }
 }
