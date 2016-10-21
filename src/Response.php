@@ -111,54 +111,17 @@ class Response
     }
 
     /**
-     * @param SimpleXMLElement $receipt
+     * Retrieve the transaction's receipt if it is available.
+     *
+     * @return \SimpleXMLElement|\SimpleXMLElement[]|null
      */
-    protected function handle(SimpleXMLElement $receipt)
+    public function receipt()
     {
-        switch ($receipt->ResponseCode) {
-            case '050':
-            case '074':
-            case 'null':
-                $this->status = Response::SYSTEM_UNAVAILABLE;
-                break;
-            case '051':
-            case '482':
-            case '484':
-                $this->status = Response::CARD_EXPIRED;
-                break;
-            case '075':
-                $this->status = Response::INVALID_CARD;
-                break;
-            case '076':
-            case '079':
-            case '080':
-            case '081':
-            case '082':
-            case '083':
-                $this->status = Response::INSUFFICIENT_FUNDS;
-                break;
-            case '077':
-                $this->status = Response::PREAUTH_FULL;
-                break;
-            case '078':
-                $this->status = Response::DUPLICATE_TRANSACTION;
-                break;
-            case '481':
-            case '483':
-                $this->status = Response::DECLINED;
-                break;
-            case '485':
-                $this->status = Response::NOT_AUTHORIZED;
-                break;
-            case '486':
-            case '487':
-            case '489':
-            case '490':
-                $this->status = Response::CVD;
-                break;
-            default:
-                $this->status = Response::ERROR;
+        if (!is_null($response = $this->transaction->response)) {
+            return $response->receipt;
         }
+
+        return null;
     }
 
     /**
@@ -168,8 +131,7 @@ class Response
      */
     public function validate()
     {
-        /** @var \SimpleXMLElement $receipt */
-        $receipt = $this->transaction->response->receipt;
+        $receipt = $this->receipt();
         $gateway = $this->transaction->gateway;
 
         if ($receipt->ReceiptId === 'Global Error Receipt') {
@@ -182,7 +144,51 @@ class Response
         $code = (int)$receipt->ResponseCode;
 
         if ($code >= 50 || $code === 0) {
-            $this->handle($receipt);
+            switch ($receipt->ResponseCode) {
+                case '050':
+                case '074':
+                case 'null':
+                    $this->status = Response::SYSTEM_UNAVAILABLE;
+                    break;
+                case '051':
+                case '482':
+                case '484':
+                    $this->status = Response::CARD_EXPIRED;
+                    break;
+                case '075':
+                    $this->status = Response::INVALID_CARD;
+                    break;
+                case '076':
+                case '079':
+                case '080':
+                case '081':
+                case '082':
+                case '083':
+                    $this->status = Response::INSUFFICIENT_FUNDS;
+                    break;
+                case '077':
+                    $this->status = Response::PREAUTH_FULL;
+                    break;
+                case '078':
+                    $this->status = Response::DUPLICATE_TRANSACTION;
+                    break;
+                case '481':
+                case '483':
+                    $this->status = Response::DECLINED;
+                    break;
+                case '485':
+                    $this->status = Response::NOT_AUTHORIZED;
+                    break;
+                case '486':
+                case '487':
+                case '489':
+                case '490':
+                    $this->status = Response::CVD;
+                    break;
+                default:
+                    $this->status = Response::ERROR;
+            }
+
             $this->successful = false;
 
             return $this;
