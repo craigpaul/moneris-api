@@ -7,6 +7,7 @@ namespace CraigPaul\Moneris;
  *
  * @property-read string $expiry
  * @property-read string $number
+ * @property-read int $crypt
  */
 class CreditCard
 {
