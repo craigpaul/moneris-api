@@ -194,4 +194,26 @@ class VaultTest extends TestCase
         $this->assertEquals($key, $receipt->DataKey);
         $this->assertEquals('true', $receipt->Complete);
     }
+
+    /** @test */
+    public function it_can_submit_a_cvd_secured_purchase_with_a_credit_card_stored_in_the_moneris_vault()
+    {
+        $params = ['environment' => Moneris::ENV_TESTING, 'cvd' => true];
+        $vault = Moneris::create($this->id, $this->token, $params)->cards();
+
+        $response = $this->vault->add($this->card);
+        $key = $response->receipt()->DataKey;
+
+        $params = array_merge($this->params, [
+            'data_key' => $key,
+            'cvd' => '111',
+        ]);
+
+        $response = $vault->purchase($params);
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertEquals($key, $receipt->DataKey);
+        $this->assertEquals('true', $receipt->Complete);
+    }
 }
