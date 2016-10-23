@@ -49,6 +49,20 @@ class Vault extends Gateway
     }
 
     /**
+     * Create a new Vault instance.
+     *
+     * @param string $id
+     * @param string $token
+     * @param string $environment
+     *
+     * @return $this
+     */
+    public static function create(string $id, string $token, string $environment)
+    {
+        return new static($id, $token, $environment);
+    }
+
+    /**
      * Delete a credit card from the Vault.
      *
      * @param string $key
@@ -66,20 +80,6 @@ class Vault extends Gateway
         $transaction = $this->transaction($params);
 
         return $this->process($transaction);
-    }
-
-    /**
-     * Create a new Vault instance.
-     *
-     * @param string $id
-     * @param string $token
-     * @param string $environment
-     *
-     * @return $this
-     */
-    public static function create(string $id, string $token, string $environment)
-    {
-        return new static($id, $token, $environment);
     }
 
     /**
@@ -111,6 +111,25 @@ class Vault extends Gateway
             'type' => $full ? 'res_lookup_full' : 'res_lookup_masked',
             'data_key' => $key,
         ];
+
+        $transaction = $this->transaction($params);
+
+        return $this->process($transaction);
+    }
+
+    /**
+     * Make a purchase.
+     *
+     * @param array $params
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function purchase(array $params = [])
+    {
+        $params = array_merge($params, [
+            'type' => 'res_purchase_cc',
+            'crypt_type' => Crypt::SSL_ENABLED_MERCHANT,
+        ]);
 
         $transaction = $this->transaction($params);
 
