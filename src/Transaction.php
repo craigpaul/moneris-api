@@ -268,6 +268,16 @@ class Transaction
                     $errors[] = Validator::set($params, 'order_id') ? null : 'Order id not provided.';
                     $errors[] = Validator::set($params, 'amount') ? null : 'Amount not provided.';
 
+                    if ($this->gateway->avs) {
+                        $errors[] = Validator::set($params, 'avs_street_number') ? null : 'Street number not provided.';
+                        $errors[] = Validator::set($params, 'avs_street_name') ? null : 'Street name not provided.';
+                        $errors[] = Validator::set($params, 'avs_zipcode') ? null : 'Postal/Zip code not provided.';
+                    }
+
+                    if ($this->gateway->cvd) {
+                        $errors[] = Validator::set($params, 'cvd') ? null : 'CVD not provided.';
+                    }
+
                     break;
                 default:
                     $errors[] = $params['type'].' is not a supported transaction type.';
