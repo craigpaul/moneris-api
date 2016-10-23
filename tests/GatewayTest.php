@@ -69,6 +69,24 @@ class GatewayTest extends TestCase
     }
 
     /** @test */
+    public function it_can_make_a_cvd_secured_purchase_and_receive_a_response()
+    {
+        $params = ['environment' => $this->environment, 'cvd' => true];
+        $gateway = Moneris::create($this->id, $this->token, $params);
+        $params = [
+            'cvd' => '111',
+            'order_id' => uniqid('1234-56789', true),
+            'amount' => '1.00',
+            'credit_card' => $this->visa,
+            'expdate' => '2012',
+        ];
+        $response = $gateway->purchase($params);
+
+        $this->assertEquals(Response::class, get_class($response));
+        $this->assertTrue($response->successful);
+    }
+
+    /** @test */
     public function it_can_pre_authorize_a_purchase_and_receive_a_response()
     {
         $response = $this->gateway->preauth($this->params);
