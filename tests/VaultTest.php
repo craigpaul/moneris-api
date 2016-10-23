@@ -7,6 +7,16 @@ use CraigPaul\Moneris\CreditCard;
 class VaultTest extends TestCase
 {
     /**
+     * @var \CraigPaul\Moneris\CreditCard
+     */
+    protected $card;
+
+    /**
+     * @var array
+     */
+    protected $params;
+
+    /**
      * @var \CraigPaul\Moneris\Vault
      */
     protected $vault;
@@ -20,6 +30,11 @@ class VaultTest extends TestCase
     {
         parent::setUp();
 
+        $this->card = CreditCard::create($this->visa, '2012');
+        $this->params = [
+            'order_id' => uniqid('1234-567890', true),
+            'amount' => '1.00',
+        ];
         $this->vault = Vault::create($this->id, $this->token, $this->environment);
     }
 
@@ -48,9 +63,7 @@ class VaultTest extends TestCase
     /** @test */
     public function it_can_add_a_credit_card_to_the_moneris_vault_and_returns_a_data_key_for_storage()
     {
-        $card = CreditCard::create($this->visa, '2012');
-
-        $response = $this->vault->add($card);
+        $response = $this->vault->add($this->card);
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
@@ -60,16 +73,14 @@ class VaultTest extends TestCase
     /** @test */
     public function it_can_update_a_credit_card_in_the_moneris_vault_and_returns_a_data_key_for_storage()
     {
-        $card = CreditCard::create($this->visa, '2012');
-
-        $response = $this->vault->add($card);
+        $response = $this->vault->add($this->card);
         $key = $response->receipt()->DataKey;
 
         $this->assertEquals('2012', $response->transaction->params['expdate']);
 
-        $card->expiry = '2112';
+        $this->card->expiry = '2112';
 
-        $response = $this->vault->update($key, $card);
+        $response = $this->vault->update($key, $this->card);
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
@@ -81,9 +92,7 @@ class VaultTest extends TestCase
     /** @test */
     public function it_can_delete_a_credit_card_from_the_moneris_vault_and_returns_a_data_key_for_storage()
     {
-        $card = CreditCard::create($this->visa, '2012');
-
-        $response = $this->vault->add($card);
+        $response = $this->vault->add($this->card);
         $key = $response->receipt()->DataKey;
 
         $response = $this->vault->delete($key);
@@ -95,7 +104,8 @@ class VaultTest extends TestCase
     }
 
     /** @test */
-    public function it_can_tokenize_a_previous_transaction_to_add_the_transactions_credit_card_in_the_moneris_vault_and_returns_a_data_key_for_storage()
+    public function it_can_tokenize_a_previous_transaction_to_add_the_transactions_credit_card_in_the_moneris_vault_and_returns_a_data_key_for_storage(
+    )
     {
         $gateway = Moneris::create($this->id, $this->token, ['environment' => Moneris::ENV_TESTING]);
 
@@ -114,11 +124,10 @@ class VaultTest extends TestCase
     }
 
     /** @test */
-    public function it_can_peek_into_the_vault_and_retrieve_a_masked_credit_card_from_the_moneris_vault_with_a_valid_data_key()
+    public function it_can_peek_into_the_vault_and_retrieve_a_masked_credit_card_from_the_moneris_vault_with_a_valid_data_key(
+    )
     {
-        $card = CreditCard::create($this->visa, '2012');
-
-        $response = $this->vault->add($card);
+        $response = $this->vault->add($this->card);
         $key = $response->receipt()->DataKey;
 
         $response = $this->vault->peek($key);
@@ -134,11 +143,10 @@ class VaultTest extends TestCase
     }
 
     /** @test */
-    public function it_can_peek_into_the_vault_and_retrieve_a_full_credit_card_from_the_moneris_vault_with_a_valid_data_key()
+    public function it_can_peek_into_the_vault_and_retrieve_a_full_credit_card_from_the_moneris_vault_with_a_valid_data_key(
+    )
     {
-        $card = CreditCard::create($this->visa, '2012');
-
-        $response = $this->vault->add($card);
+        $response = $this->vault->add($this->card);
         $key = $response->receipt()->DataKey;
 
         $response = $this->vault->peek($key, true);
@@ -167,5 +175,23 @@ class VaultTest extends TestCase
 
         $this->assertTrue($response->successful);
         $this->assertGreaterThan(0, count($receipt->ResolveData));
+    }
+
+    /** @test */
+    public function it_can_make_a_purchase_with_a_credit_card_stored_in_the_moneris_vault()
+    {
+        $response = $this->vault->add($this->card);
+        $key = $response->receipt()->DataKey;
+
+        $params = array_merge($this->params, [
+            'data_key' => $key,
+        ]);
+
+        $response = $this->vault->purchase($params);
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertEquals($key, $receipt->DataKey);
+        $this->assertEquals('true', $receipt->Complete);
     }
 }
