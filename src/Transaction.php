@@ -263,6 +263,7 @@ class Transaction
                     $errors[] = Validator::set($params, 'data_key') ? null : 'Data key not provided.';
 
                     break;
+                case 'res_preauth_cc':
                 case 'res_purchase_cc':
                     $errors[] = Validator::set($params, 'data_key') ? null : 'Data key not provided.';
                     $errors[] = Validator::set($params, 'order_id') ? null : 'Order id not provided.';

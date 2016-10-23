@@ -118,6 +118,25 @@ class Vault extends Gateway
     }
 
     /**
+     * Pre-authorize a purchase.
+     *
+     * @param array $params
+     *
+     * @return \CraigPaul\Moneris\Response
+     */
+    public function preauth(array $params = [])
+    {
+        $params = array_merge($params, [
+            'type' => 'res_preauth_cc',
+            'crypt_type' => Crypt::SSL_ENABLED_MERCHANT,
+        ]);
+
+        $transaction = $this->transaction($params);
+
+        return $this->process($transaction);
+    }
+
+    /**
      * Make a purchase.
      *
      * @param array $params
