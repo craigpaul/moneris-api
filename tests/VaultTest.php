@@ -240,4 +240,22 @@ class VaultTest extends TestCase
         $this->assertEquals($key, $receipt->DataKey);
         $this->assertEquals('true', $receipt->Complete);
     }
+
+    /** @test */
+    public function it_can_pre_authorize_a_credit_card_stored_in_the_moneris_vault()
+    {
+        $response = $this->vault->add($this->card);
+        $key = $response->receipt()->DataKey;
+
+        $params = array_merge($this->params, [
+            'data_key' => $key,
+        ]);
+
+        $response = $this->vault->preauth($params);
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertEquals($key, $receipt->DataKey);
+        $this->assertEquals('true', $receipt->Complete);
+    }
 }
