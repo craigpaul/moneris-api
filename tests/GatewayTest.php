@@ -163,6 +163,44 @@ class GatewayTest extends TestCase
     }
 
     /** @test */
+    public function it_can_verify_a_cvd_secured_card_and_receive_a_response()
+    {
+        $params = ['environment' => $this->environment, 'cvd' => true];
+        $gateway = Moneris::create($this->id, $this->token, $params);
+        $params = [
+            'cvd' => '111',
+            'order_id' => uniqid('1234-56789', true),
+            'amount' => '1.00',
+            'credit_card' => $this->visa,
+            'expdate' => '2012',
+        ];
+        $response = $gateway->verify($params);
+
+        $this->assertEquals(Response::class, get_class($response));
+        $this->assertTrue($response->successful);
+    }
+
+    /** @test */
+    public function it_can_verify_a_avs_secured_card_and_receive_a_response()
+    {
+        $params = ['environment' => $this->environment, 'avs' => true];
+        $gateway = Moneris::create($this->id, $this->token, $params);
+        $params = [
+            'avs_street_number' => '123',
+            'avs_street_name' => 'Fake Street',
+            'avs_zipcode' => 'X0X0X0',
+            'order_id' => uniqid('1234-56789', true),
+            'amount' => '1.00',
+            'credit_card' => $this->visa,
+            'expdate' => '2012',
+        ];
+        $response = $gateway->verify($params);
+
+        $this->assertEquals(Response::class, get_class($response));
+        $this->assertTrue($response->successful);
+    }
+
+    /** @test */
     public function it_can_void_a_transaction_after_making_a_purchase_and_receive_a_response()
     {
         $response = $this->gateway->purchase($this->params);
