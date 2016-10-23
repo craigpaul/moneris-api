@@ -1,5 +1,26 @@
 #Moneris API Changelog
 
+###0.2.1 (2016-10-23)
+
+####Added
+
+- Adds avs and cvd card verification [`e69410bc50`](https://github.com/craigpaul/moneris-api/commit/e69410bc50)
+- Adds avs and cvd preauth tests [`ba9a90ff64`](https://github.com/craigpaul/moneris-api/commit/ba9a90ff64)
+- Adds avs purchase test [`a417518da8`](https://github.com/craigpaul/moneris-api/commit/a417518da8)
+- Adds cvd purchase test [`54b995da55`](https://github.com/craigpaul/moneris-api/commit/54b995da55)
+- Adds test to capture a vault pre authorized credit card [`dc13140983`](https://github.com/craigpaul/moneris-api/commit/dc13140983)
+- Adds avs vault pre auth test [`c1d4b1cf30`](https://github.com/craigpaul/moneris-api/commit/c1d4b1cf30)
+- Adds vault pre auth cvd test [`38a2185e34`](https://github.com/craigpaul/moneris-api/commit/38a2185e34)
+- Adds vault preauth to efraud array [`96aa2fdae7`](https://github.com/craigpaul/moneris-api/commit/96aa2fdae7)
+- Adds vault pre authorization test [`4295d1e67a`](https://github.com/craigpaul/moneris-api/commit/4295d1e67a)
+- Adds vault pre authorization functionality [`faa56b3913`](https://github.com/craigpaul/moneris-api/commit/faa56b3913)
+- Adds vault avs purchase test [`d6c0e3e206`](https://github.com/craigpaul/moneris-api/commit/d6c0e3e206)
+- Adds missing validator rules for cvd and avs [`9cb0c6c0b4`](https://github.com/craigpaul/moneris-api/commit/9cb0c6c0b4)
+- Adds vault cvd purchase test [`f7d7cba87b`](https://github.com/craigpaul/moneris-api/commit/f7d7cba87b)
+- Adds vault cvd purchase functionality [`0fc4104d17`](https://github.com/craigpaul/moneris-api/commit/0fc4104d17)
+- Adds vault purchase test [`35c0a40ad4`](https://github.com/craigpaul/moneris-api/commit/35c0a40ad4)
+- Adds purchase ability through vault [`8f186ef189`](https://github.com/craigpaul/moneris-api/commit/8f186ef189)
+
 ###0.2.0 (2016-10-21)
 
 ####Changed
