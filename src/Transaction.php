@@ -162,7 +162,7 @@ class Transaction
         $type = $xml->addChild($params['type']);
         $efraud = in_array(
             $params['type'],
-            ['purchase', 'preauth', 'card_verification', 'cavv_purchase', 'cavv_preauth']
+            ['purchase', 'preauth', 'card_verification', 'cavv_purchase', 'cavv_preauth', 'res_purchase_cc']
         );
         unset($params['type']);
 

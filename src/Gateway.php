@@ -121,7 +121,17 @@ class Gateway
      */
     public function cards()
     {
-        return new Vault($this->id, $this->token, $this->environment);
+        $vault = new Vault($this->id, $this->token, $this->environment);
+
+        if (isset($this->avs)) {
+            $vault->avs = boolval($this->avs);
+        }
+
+        if (isset($this->cvd)) {
+            $vault->cvd = boolval($this->cvd);
+        }
+
+        return $vault;
     }
 
     /**
