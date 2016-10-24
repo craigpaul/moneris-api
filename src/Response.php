@@ -2,7 +2,6 @@
 
 namespace CraigPaul\Moneris;
 
-
 /**
  * CraigPaul\Moneris\Response
  *
