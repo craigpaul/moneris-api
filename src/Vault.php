@@ -66,7 +66,6 @@ class Vault extends Gateway
      * Delete a credit card from the Vault.
      *
      * @param string $key
-     * @param \CraigPaul\Moneris\CreditCard $card
      *
      * @return \CraigPaul\Moneris\Response
      */

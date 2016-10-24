@@ -51,7 +51,7 @@ class Moneris
      *
      * @param string $id
      * @param string $token
-     * @param string $environment
+     * @param array $params
      *
      * @return void
      */

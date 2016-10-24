@@ -90,6 +90,7 @@ class Gateway
      *
      * @param \CraigPaul\Moneris\Transaction|string $transaction
      * @param string|null $order
+     * @param mixed|null $amount
      *
      * @return \CraigPaul\Moneris\Response
      */
@@ -189,6 +190,7 @@ class Gateway
      *
      * @param \CraigPaul\Moneris\Transaction|string $transaction
      * @param string|null $order
+     * @param mixed|null $amount
      *
      * @return \CraigPaul\Moneris\Response
      */
