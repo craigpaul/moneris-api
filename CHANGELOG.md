@@ -1,5 +1,29 @@
 #Moneris API Changelog
 
+###0.3.0 (2016-10-25)
+
+####Added
+
+- Adds avs and cvd result params [`df1adb4f11`](https://github.com/craigpaul/moneris-api/commit/df1adb4f11)
+- Adds receipt class as a wrapper for the Moneris response [`313e6f70ac`](https://github.com/craigpaul/moneris-api/commit/313e6f70ac)
+- Adds guzzle dependency to constructors [`1c5ca81562`](https://github.com/craigpaul/moneris-api/commit/1c5ca81562)
+- Adds guzzle dependency to constructor [`376c4a7909`](https://github.com/craigpaul/moneris-api/commit/376c4a7909)
+- Adds test listener for Mockery [`707e299c75`](https://github.com/craigpaul/moneris-api/commit/707e299c75)
+- Adds guzzlehttp/guzzle [`e73f910111`](https://github.com/craigpaul/moneris-api/commit/e73f910111)
+
+####Changed
+
+- Applies php-cs-fixer fixes [`f0c7a81744`](https://github.com/craigpaul/moneris-api/commit/f0c7a81744) 
+- Updates receipt reading method for tests [`42ce4b4666`](https://github.com/craigpaul/moneris-api/commit/42ce4b4666)
+- Updates attribute check test [`2286c2ce24`](https://github.com/craigpaul/moneris-api/commit/2286c2ce24)
+- Changes receipt reading methods [`f2958c7701`](https://github.com/craigpaul/moneris-api/commit/f2958c7701)
+- Changes raw curl to guzzle and accepts guzzle through the constructor [`4985650eae`](https://github.com/craigpaul/moneris-api/commit/4985650eae)
+- Removes static references from tests [`02d23c1b5d`](https://github.com/craigpaul/moneris-api/commit/02d23c1b5d)
+- Changes Processor from static to an instantiatable class [`ebf3791954`](https://github.com/craigpaul/moneris-api/commit/ebf3791954)
+- Applies php-cs-fixer fixes [`6f056d64c0`](https://github.com/craigpaul/moneris-api/commit/6f056d64c0)
+- Fixes docblocks [`32158db5e4`](https://github.com/craigpaul/moneris-api/commit/32158db5e4)
+- Fixes spelling mistake in description [`0bcdb73fb4`](https://github.com/craigpaul/moneris-api/commit/0bcdb73fb4)
+
 ###0.2.1 (2016-10-23)
 
 ####Added
