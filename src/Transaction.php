@@ -16,6 +16,10 @@ class Transaction
 {
     use Gettable, Settable;
 
+    const EMPTY_PARAMETERS             = 1;
+    const PARAMETER_NOT_SET            = 2;
+    const UNSUPPORTED_TRANSACTION_TYPE = 3;
+
     /**
      * The errors for the transaction.
      *
@@ -162,7 +166,15 @@ class Transaction
         $type = $xml->addChild($params['type']);
         $efraud = in_array(
             $params['type'],
-            ['purchase', 'preauth', 'card_verification', 'cavv_purchase', 'cavv_preauth', 'res_purchase_cc', 'res_preauth_cc']
+            [
+                'purchase',
+                'preauth',
+                'card_verification',
+                'cavv_purchase',
+                'cavv_preauth',
+                'res_purchase_cc',
+                'res_preauth_cc'
+            ]
         );
         unset($params['type']);
 
@@ -203,7 +215,7 @@ class Transaction
         $params = $this->params;
         $errors = [];
 
-        $errors[] = Validator::isEmpty($params) ? 'No parameters provided.' : null;
+        $errors[] = empty($params) ? ['field' => 'all', 'code' => self::EMPTY_PARAMETERS, 'title' => 'empty'] : null;
 
         if (isset($params['type'])) {
             switch ($params['type']) {
@@ -212,79 +224,220 @@ class Transaction
                 case 'card_verification':
                 case 'preauth':
                 case 'purchase':
-                    $errors[] = Validator::set($params, 'order_id') ? null : 'Order Id not provided.';
-                    $errors[] = Validator::set($params, 'pan') ? null : 'Credit card number not provided.';
-                    $errors[] = Validator::set($params, 'amount') ? null : 'Amount not provided.';
-                    $errors[] = Validator::set($params, 'expdate') ? null : 'Expiry date not provided.';
+                    $errors[] = isset($params['order_id']) ? null : [
+                        'field' => 'order_id',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['pan']) ? null : [
+                        'field' => 'credit_card',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['amount']) ? null : [
+                        'field' => 'amount',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['expdate']) ? null : [
+                        'field' => 'expdate',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
 
                     if ($this->gateway->avs) {
-                        $errors[] = Validator::set($params, 'avs_street_number') ? null : 'Street number not provided.';
-                        $errors[] = Validator::set($params, 'avs_street_name') ? null : 'Street name not provided.';
-                        $errors[] = Validator::set($params, 'avs_zipcode') ? null : 'Postal/Zip code not provided.';
+                        $errors[] = isset($params['avs_street_number']) ? null : [
+                            'field' => 'avs_street_number',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+
+                        $errors[] = isset($params['avs_street_name']) ? null : [
+                            'field' => 'avs_street_name',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+
+                        $errors[] = isset($params['avs_zipcode']) ? null : [
+                            'field' => 'avs_zipcode',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
                     }
 
                     if ($this->gateway->cvd) {
-                        $errors[] = Validator::set($params, 'cvd') ? null : 'CVD not provided.';
+                        $errors[] = isset($params['cvd']) ? null : [
+                            'field' => 'cvd',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
                     }
 
                     break;
                 case 'res_tokenize_cc':
                 case 'purchasecorrection':
-                    $errors[] = Validator::set($params, 'order_id') ? null : 'Order id not provided.';
-                    $errors[] = Validator::set($params, 'txn_number') ? null : 'Transaction number not provided.';
+                    $errors[] = isset($params['order_id']) ? null : [
+                        'field' => 'order_id',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['txn_number']) ? null : [
+                        'field' => 'txn_number',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
 
                     break;
                 case 'completion':
-                    $errors[] = Validator::set($params, 'comp_amount') ? null : 'Amount not provided.';
-                    $errors[] = Validator::set($params, 'order_id') ? null : 'Order id not provided.';
-                    $errors[] = Validator::set($params, 'txn_number') ? null : 'Transaction number not provided.';
+                    $errors[] = isset($params['comp_amount']) ? null : [
+                        'field' => 'comp_amount',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['order_id']) ? null : [
+                        'field' => 'order_id',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['txn_number']) ? null : [
+                        'field' => 'txn_number',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
 
                     break;
                 case 'refund':
-                    $errors[] = Validator::set($params, 'amount') ? null : 'Amount not provided.';
-                    $errors[] = Validator::set($params, 'order_id') ? null : 'Order id not provided.';
-                    $errors[] = Validator::set($params, 'txn_number') ? null : 'Transaction number not provided.';
+                    $errors[] = isset($params['amount']) ? null : [
+                        'field' => 'amount',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['order_id']) ? null : [
+                        'field' => 'order_id',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['txn_number']) ? null : [
+                        'field' => 'txn_number',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
 
                     break;
                 case 'res_add_cc':
-                    $errors[] = Validator::set($params, 'pan') ? null : 'Credit card number not provided.';
-                    $errors[] = Validator::set($params, 'expdate') ? null : 'Expiry date not provided.';
+                    $errors[] = isset($params['pan']) ? null : [
+                        'field' => 'pan',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['expdate']) ? null : [
+                        'field' => 'expdate',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
 
                     break;
                 case 'res_update_cc':
-                    $errors[] = Validator::set($params, 'data_key') ? null : 'Data key not provided.';
-                    $errors[] = Validator::set($params, 'pan') ? null : 'Credit card number not provided.';
-                    $errors[] = Validator::set($params, 'expdate') ? null : 'Expiry date not provided.';
+                    $errors[] = isset($params['data_key']) ? null : [
+                        'field' => 'data_key',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['pan']) ? null : [
+                        'field' => 'pan',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['expdate']) ? null : [
+                        'field' => 'expdate',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
 
                     break;
                 case 'res_delete':
                 case 'res_lookup_full':
                 case 'res_lookup_masked':
-                    $errors[] = Validator::set($params, 'data_key') ? null : 'Data key not provided.';
+                    $errors[] = isset($params['data_key']) ? null : [
+                        'field' => 'data_key',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
 
                     break;
                 case 'res_preauth_cc':
                 case 'res_purchase_cc':
-                    $errors[] = Validator::set($params, 'data_key') ? null : 'Data key not provided.';
-                    $errors[] = Validator::set($params, 'order_id') ? null : 'Order id not provided.';
-                    $errors[] = Validator::set($params, 'amount') ? null : 'Amount not provided.';
+                    $errors[] = isset($params['data_key']) ? null : [
+                        'field' => 'data_key',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['order_id']) ? null : [
+                        'field' => 'order_id',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['amount']) ? null : [
+                        'field' => 'amount',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
 
                     if ($this->gateway->avs) {
-                        $errors[] = Validator::set($params, 'avs_street_number') ? null : 'Street number not provided.';
-                        $errors[] = Validator::set($params, 'avs_street_name') ? null : 'Street name not provided.';
-                        $errors[] = Validator::set($params, 'avs_zipcode') ? null : 'Postal/Zip code not provided.';
+                        $errors[] = isset($params['avs_street_number']) ? null : [
+                            'field' => 'avs_street_number',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+
+                        $errors[] = isset($params['avs_street_name']) ? null : [
+                            'field' => 'avs_street_name',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+
+                        $errors[] = isset($params['avs_zipcode']) ? null : [
+                            'field' => 'avs_zipcode',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
                     }
 
                     if ($this->gateway->cvd) {
-                        $errors[] = Validator::set($params, 'cvd') ? null : 'CVD not provided.';
+                        $errors[] = isset($params['cvd']) ? null : [
+                            'field' => 'cvd',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
                     }
 
                     break;
                 default:
-                    $errors[] = $params['type'].' is not a supported transaction type.';
+                    $errors[] = [
+                        'field' => 'type',
+                        'code' => self::UNSUPPORTED_TRANSACTION_TYPE,
+                        'title' => 'unsupported_transaction'
+                    ];
             }
         } else {
-            $errors[] = 'Transaction type not provided.';
+            $errors[] = [
+                'field' => 'type',
+                'code' => self::PARAMETER_NOT_SET,
+                'title' => 'not_set'
+            ];
         }
 
         $errors = array_filter($errors);
