@@ -32,9 +32,11 @@ class Receipt
         $params = [
             ['property' => 'amount', 'key' => 'TransAmount', 'cast' => 'float'],
             ['property' => 'authorization', 'key' => 'AuthCode', 'cast' => 'string'],
+            ['property' => 'avs_result', 'key' => 'AvsResultCode', 'cast' => 'string'],
             ['property' => 'card', 'key' => 'CardType', 'cast' => 'string'],
             ['property' => 'code', 'key' => 'ResponseCode', 'cast' => 'string'],
             ['property' => 'complete', 'key' => 'Complete', 'cast' => 'boolean'],
+            ['property' => 'cvd_result', 'key' => 'CvdResultCode', 'cast' => 'string'],
             ['property' => 'data', 'key' => 'ResolveData', 'cast' => 'array', 'callback' => 'setData'],
             ['property' => 'date', 'key' => 'TransDate', 'cast' => 'string'],
             ['property' => 'id', 'key' => 'ReceiptId', 'cast' => 'string'],
