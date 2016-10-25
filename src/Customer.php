@@ -51,10 +51,10 @@ class Customer
      */
     public function __construct(array $params = [])
     {
-        $this->id = $params['id'] ?? null;
-        $this->email = $params['email'] ?? null;
-        $this->phone = $params['phone'] ?? null;
-        $this->note = $params['note'] ?? null;
+        $this->id = isset($params['id']) ? $params['id'] : null;
+        $this->email = isset($params['email']) ? $params['email'] : null;
+        $this->phone = isset($params['phone']) ? $params['phone'] : null;
+        $this->note = isset($params['note']) ? $params['note'] : null;
     }
 
     /**

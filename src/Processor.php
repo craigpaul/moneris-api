@@ -49,7 +49,7 @@ class Processor
      *
      * @return array
      */
-    public function config(string $environment)
+    public function config($environment = '')
     {
         if ($environment === Moneris::ENV_LIVE) {
             $this->config['host'] = 'www3.moneris.com';
@@ -101,7 +101,7 @@ class Processor
      *
      * @return string
      */
-    protected function send(array $config, string $url, string $xml)
+    protected function send(array $config, $url = '', $xml = '')
     {
         $response = $this->client->post($url, [
             'body' => $xml,

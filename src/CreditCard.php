@@ -43,7 +43,7 @@ class CreditCard
      *
      * @return void
      */
-    public function __construct(string $number, string $expiry, int $crypt = 7)
+    public function __construct($number = '', $expiry = '', $crypt = 7)
     {
         $this->number = $number;
         $this->expiry = $expiry;
@@ -73,7 +73,7 @@ class CreditCard
      *
      * @return $this
      */
-    public static function create(string $number, string $expiry, int $crypt = 7)
+    public static function create($number = '', $expiry = '', $crypt = 7)
     {
         return new static($number, $expiry, $crypt);
     }

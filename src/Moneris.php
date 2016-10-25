@@ -55,11 +55,11 @@ class Moneris
      *
      * @return void
      */
-    public function __construct(string $id, string $token, array $params = [])
+    public function __construct($id = '', $token = '', array $params = [])
     {
         $this->id = $id;
         $this->token = $token;
-        $this->environment = $params['environment'] ?? self::ENV_LIVE;
+        $this->environment = isset($params['environment']) ? $params['environment'] : self::ENV_LIVE;
         $this->params = $params;
     }
 
@@ -72,7 +72,7 @@ class Moneris
      *
      * @return \CraigPaul\Moneris\Gateway
      */
-    public static function create(string $id, string $token, array $params = [])
+    public static function create($id = '', $token = '', array $params = [])
     {
         $moneris = new static($id, $token, $params);
 

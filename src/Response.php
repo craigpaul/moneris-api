@@ -192,7 +192,7 @@ class Response
             return $this;
         }
 
-        $code = $receipt->read('avs_result') ?? false;
+        $code = !is_null($receipt->read('avs_result')) ? $receipt->read('avs_result') : false;
 
         if ($gateway->avs && $code && $code !== 'null' && !in_array($code, $gateway->avsCodes)) {
             switch ($code) {
@@ -224,7 +224,7 @@ class Response
             return $this;
         }
 
-        $code = $receipt->read('cvd_result') ?? null;
+        $code = !is_null($receipt->read('cvd_result')) ? $receipt->read('cvd_result') : null;
 
         if ($gateway->avs && !is_null($code) && $code !== 'null' && !in_array($code{1}, $gateway->cvdCodes)) {
             $this->status = Response::CVD;

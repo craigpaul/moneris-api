@@ -203,7 +203,7 @@ class Transaction
         $params = $this->params;
         $errors = [];
 
-        $errors[] = Validator::empty($params) ? 'No parameters provided.' : null;
+        $errors[] = Validator::isEmpty($params) ? 'No parameters provided.' : null;
 
         if (isset($params['type'])) {
             switch ($params['type']) {

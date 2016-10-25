@@ -92,7 +92,7 @@ class Receipt
      *
      * @return mixed|null
      */
-    public function read(string $value)
+    public function read($value = '')
     {
         if (isset($this->data[$value]) && !is_null($this->data[$value])) {
             return $this->data[$value];
@@ -116,8 +116,8 @@ class Receipt
             'email' => isset($data['email']) ? $data['email']->__toString() : '',
             'note' => isset($data['note']) ? $data['note']->__toString() : '',
             'crypt' => isset($data['crypt_type']) ? intval($data['crypt_type']) : null,
-            'masked_pan' => $data['masked_pan'] ?? null,
-            'pan' => $data['pan'] ?? null,
+            'masked_pan' => isset($data['masked_pan']) ? $data['masked_pan'] : null,
+            'pan' => isset($data['pan']) ? $data['pan'] : null,
             'expiry_date' => [
                 'month' => isset($data['expdate']) ? substr($data['expdate'], -2, 2) : null,
                 'year' => isset($data['expdate']) ? substr($data['expdate'], 0, 2) : null,

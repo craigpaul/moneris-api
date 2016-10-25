@@ -80,7 +80,7 @@ class Gateway
      *
      * @return void
      */
-    public function __construct(string $id, string $token, string $environment)
+    public function __construct($id = '', $token = '', $environment = '')
     {
         $this->id = $id;
         $this->token = $token;
@@ -96,11 +96,11 @@ class Gateway
      *
      * @return \CraigPaul\Moneris\Response
      */
-    public function capture($transaction, string $order = null, $amount = null)
+    public function capture($transaction, $order = null, $amount = null)
     {
         if ($transaction instanceof Transaction) {
             $order = $transaction->order();
-            $amount = $amount ?? $transaction->amount();
+            $amount = !is_null($amount) ? $amount : $transaction->amount();
             $transaction = $transaction->number();
         }
 
@@ -198,11 +198,11 @@ class Gateway
      *
      * @return \CraigPaul\Moneris\Response
      */
-    public function refund($transaction, string $order = null, $amount = null)
+    public function refund($transaction, $order = null, $amount = null)
     {
         if ($transaction instanceof Transaction) {
             $order = $transaction->order();
-            $amount = $amount ?? $transaction->amount();
+            $amount = !is_null($amount) ? $amount : $transaction->amount();
             $transaction = $transaction->number();
         }
 
@@ -262,7 +262,7 @@ class Gateway
      *
      * @return \CraigPaul\Moneris\Response
      */
-    public function void($transaction, string $order = null)
+    public function void($transaction, $order = null)
     {
         if ($transaction instanceof Transaction) {
             $order = $transaction->order();

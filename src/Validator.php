@@ -9,7 +9,7 @@ class Validator
      *
      * @return bool
      */
-    public static function empty(array $array = [])
+    public static function isEmpty(array $array = [])
     {
         return empty($array);
     }
@@ -20,7 +20,7 @@ class Validator
      *
      * @return bool
      */
-    public static function set(array $array, string $key)
+    public static function set(array $array, $key = '')
     {
         return isset($array[$key]);
     }

@@ -22,7 +22,7 @@ class Vault extends Gateway
      *
      * @return void
      */
-    public function __construct(string $id, string $token, string $environment)
+    public function __construct($id = '', $token = '', $environment = '')
     {
         parent::__construct($id, $token, $environment);
     }
@@ -57,7 +57,7 @@ class Vault extends Gateway
      *
      * @return $this
      */
-    public static function create(string $id, string $token, string $environment)
+    public static function create($id = '', $token = '', $environment = '')
     {
         return new static($id, $token, $environment);
     }
@@ -69,7 +69,7 @@ class Vault extends Gateway
      *
      * @return \CraigPaul\Moneris\Response
      */
-    public function delete(string $key)
+    public function delete($key = '')
     {
         $params = [
             'type' => 'res_delete',
@@ -104,7 +104,7 @@ class Vault extends Gateway
      *
      * @return \CraigPaul\Moneris\Response
      */
-    public function peek(string $key, bool $full = false)
+    public function peek($key = '', $full = false)
     {
         $params = [
             'type' => $full ? 'res_lookup_full' : 'res_lookup_masked',
@@ -163,7 +163,7 @@ class Vault extends Gateway
      *
      * @return \CraigPaul\Moneris\Response
      */
-    public function tokenize($transaction, string $order = null)
+    public function tokenize($transaction, $order = null)
     {
         if ($transaction instanceof Transaction) {
             $order = $transaction->order();
@@ -189,7 +189,7 @@ class Vault extends Gateway
      *
      * @return \CraigPaul\Moneris\Response
      */
-    public function update(string $key, CreditCard $card)
+    public function update($key = '', CreditCard $card)
     {
         $params = [
             'type' => 'res_update_cc',
