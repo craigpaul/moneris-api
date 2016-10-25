@@ -23,6 +23,13 @@ class ResponseTest extends TestCase
     protected $params;
 
     /**
+     * The Processor instance.
+     *
+     * @var \CraigPaul\Moneris\Processor
+     */
+    protected $processor;
+
+    /**
      * The Response instance.
      *
      * @var \CraigPaul\Moneris\Response
@@ -56,6 +63,7 @@ class ResponseTest extends TestCase
             'expdate' => '2012',
         ];
         $this->transaction = new Transaction($this->gateway, $this->params);
+        $this->processor = new Processor();
     }
 
     /** @test */
@@ -83,7 +91,7 @@ class ResponseTest extends TestCase
     /** @test */
     public function it_can_validate_an_api_response_from_a_proper_transaction()
     {
-        $response = Processor::process($this->transaction);
+        $response = $this->processor->process($this->transaction);
 
         $response = $response->validate();
 
@@ -93,7 +101,7 @@ class ResponseTest extends TestCase
     /** @test */
     public function it_can_receive_a_receipt_from_a_properly_processed_transaction()
     {
-        $response = Processor::process($this->transaction);
+        $response = $this->processor->process($this->transaction);
 
         /** @var \CraigPaul\Moneris\Response $response */
         $response = $response->validate();

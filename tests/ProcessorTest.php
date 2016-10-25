@@ -23,6 +23,13 @@ class ProcessorTest extends TestCase
     protected $params;
 
     /**
+     * The Processor instance.
+     *
+     * @var \CraigPaul\Moneris\Processor
+     */
+    protected $processor;
+
+    /**
      * The Transaction instance.
      *
      * @var \CraigPaul\Moneris\Transaction
@@ -49,6 +56,15 @@ class ProcessorTest extends TestCase
             'expdate' => '2012',
         ];
         $this->transaction = new Transaction($this->gateway, $this->params);
+        $this->processor = new Processor();
+    }
+
+    /** @test */
+    public function it_can_instantiate_via_the_constructor()
+    {
+        $processor = new Processor();
+
+        $this->assertEquals(Processor::class, get_class($processor));
     }
 
     /** @test */
@@ -56,7 +72,7 @@ class ProcessorTest extends TestCase
     {
         $transaction = new Transaction($this->gateway);
 
-        $response = Processor::process($transaction);
+        $response = $this->processor->process($transaction);
 
         $this->assertFalse($response->successful);
         $this->assertEquals(Response::INVALID_TRANSACTION_DATA, $response->status);
@@ -65,7 +81,7 @@ class ProcessorTest extends TestCase
     /** @test */
     public function it_can_submit_a_proper_request_to_the_moneris_api()
     {
-        $response = Processor::process($this->transaction);
+        $response = $this->processor->process($this->transaction);
 
         $this->assertTrue($response->successful);
     }
