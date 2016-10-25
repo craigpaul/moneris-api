@@ -80,7 +80,6 @@ class Receipt
 
                 $array[$property] = $this->$callback($array[$property]);
             }
-
         }
 
         return $array;
