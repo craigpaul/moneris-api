@@ -2,6 +2,8 @@
 
 namespace CraigPaul\Moneris;
 
+use GuzzleHttp\Client;
+
 /**
  * CraigPaul\Moneris\Gateway
  *
@@ -182,7 +184,7 @@ class Gateway
      */
     protected function process(Transaction $transaction)
     {
-        $processor = new Processor();
+        $processor = new Processor(new Client());
 
         return $processor->process($transaction);
     }
