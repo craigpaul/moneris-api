@@ -67,14 +67,14 @@ class VaultTest extends TestCase
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
-        $this->assertNotNull($receipt->DataKey);
+        $this->assertNotNull($receipt->read('key'));
     }
 
     /** @test */
     public function it_can_update_a_credit_card_in_the_moneris_vault_and_returns_a_data_key_for_storage()
     {
         $response = $this->vault->add($this->card);
-        $key = $response->receipt()->DataKey;
+        $key = $response->receipt()->read('key');
 
         $this->assertEquals('2012', $response->transaction->params['expdate']);
 
@@ -84,8 +84,8 @@ class VaultTest extends TestCase
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
-        $this->assertNotNull($receipt->DataKey);
-        $this->assertEquals($key, $receipt->DataKey);
+        $this->assertNotNull($receipt->read('key'));
+        $this->assertEquals($key, $receipt->read('key'));
         $this->assertEquals('2112', $response->transaction->params['expdate']);
     }
 
@@ -93,19 +93,18 @@ class VaultTest extends TestCase
     public function it_can_delete_a_credit_card_from_the_moneris_vault_and_returns_a_data_key_for_storage()
     {
         $response = $this->vault->add($this->card);
-        $key = $response->receipt()->DataKey;
+        $key = $response->receipt()->read('key');
 
         $response = $this->vault->delete($key);
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
-        $this->assertNotNull($receipt->DataKey);
-        $this->assertEquals($key, $receipt->DataKey);
+        $this->assertNotNull($receipt->read('key'));
+        $this->assertEquals($key, $receipt->read('key'));
     }
 
     /** @test */
-    public function it_can_tokenize_a_previous_transaction_to_add_the_transactions_credit_card_in_the_moneris_vault_and_returns_a_data_key_for_storage(
-    )
+    public function it_can_tokenize_a_previous_transaction_to_add_the_transactions_credit_card_in_the_moneris_vault_and_returns_a_data_key_for_storage()
     {
         $gateway = Moneris::create($this->id, $this->token, ['environment' => Moneris::ENV_TESTING]);
 
@@ -120,15 +119,14 @@ class VaultTest extends TestCase
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
-        $this->assertNotNull($receipt->DataKey);
+        $this->assertNotNull($receipt->read('key'));
     }
 
     /** @test */
-    public function it_can_peek_into_the_vault_and_retrieve_a_masked_credit_card_from_the_moneris_vault_with_a_valid_data_key(
-    )
+    public function it_can_peek_into_the_vault_and_retrieve_a_masked_credit_card_from_the_moneris_vault_with_a_valid_data_key()
     {
         $response = $this->vault->add($this->card);
-        $key = $response->receipt()->DataKey;
+        $key = $response->receipt()->read('key');
 
         $response = $this->vault->peek($key);
         $receipt = $response->receipt();
@@ -136,26 +134,27 @@ class VaultTest extends TestCase
         $end = substr($this->visa, -4, 4);
 
         $this->assertTrue($response->successful);
-        $this->assertNotNull($receipt->DataKey);
-        $this->assertEquals('2012', $receipt->ResolveData->expdate);
-        $this->assertEquals($beginning, substr($receipt->ResolveData->masked_pan, 0, 4));
-        $this->assertEquals($end, substr($receipt->ResolveData->masked_pan, -4, 4));
+        $this->assertNotNull($receipt->read('key'));
+        $this->assertEquals('12', $receipt->read('data')['expiry_date']['month']);
+        $this->assertEquals('20', $receipt->read('data')['expiry_date']['year']);
+        $this->assertEquals($beginning, substr($receipt->read('data')['masked_pan'], 0, 4));
+        $this->assertEquals($end, substr($receipt->read('data')['masked_pan'], -4, 4));
     }
 
     /** @test */
-    public function it_can_peek_into_the_vault_and_retrieve_a_full_credit_card_from_the_moneris_vault_with_a_valid_data_key(
-    )
+    public function it_can_peek_into_the_vault_and_retrieve_a_full_credit_card_from_the_moneris_vault_with_a_valid_data_key()
     {
         $response = $this->vault->add($this->card);
-        $key = $response->receipt()->DataKey;
+        $key = $response->receipt()->read('key');
 
         $response = $this->vault->peek($key, true);
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
-        $this->assertNotNull($receipt->DataKey);
-        $this->assertEquals('2012', $receipt->ResolveData->expdate);
-        $this->assertEquals($this->visa, $receipt->ResolveData->pan);
+        $this->assertNotNull($receipt->read('key'));
+        $this->assertEquals('12', $receipt->read('data')['expiry_date']['month']);
+        $this->assertEquals('20', $receipt->read('data')['expiry_date']['year']);
+        $this->assertEquals($this->visa, $receipt->read('data')['pan']);
     }
 
     /** @test */
@@ -174,14 +173,14 @@ class VaultTest extends TestCase
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
-        $this->assertGreaterThan(0, count($receipt->ResolveData));
+        $this->assertGreaterThan(0, count($receipt->read('data')));
     }
 
     /** @test */
     public function it_can_make_a_purchase_with_a_credit_card_stored_in_the_moneris_vault()
     {
         $response = $this->vault->add($this->card);
-        $key = $response->receipt()->DataKey;
+        $key = $response->receipt()->read('key');
 
         $params = array_merge($this->params, [
             'data_key' => $key,
@@ -191,8 +190,8 @@ class VaultTest extends TestCase
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
-        $this->assertEquals($key, $receipt->DataKey);
-        $this->assertEquals('true', $receipt->Complete);
+        $this->assertEquals($key, $receipt->read('key'));
+        $this->assertEquals(true, $receipt->read('complete'));
     }
 
     /** @test */
@@ -202,7 +201,7 @@ class VaultTest extends TestCase
         $vault = Moneris::create($this->id, $this->token, $params)->cards();
 
         $response = $this->vault->add($this->card);
-        $key = $response->receipt()->DataKey;
+        $key = $response->receipt()->read('key');
 
         $params = array_merge($this->params, [
             'data_key' => $key,
@@ -213,8 +212,8 @@ class VaultTest extends TestCase
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
-        $this->assertEquals($key, $receipt->DataKey);
-        $this->assertEquals('true', $receipt->Complete);
+        $this->assertEquals($key, $receipt->read('key'));
+        $this->assertEquals(true, $receipt->read('complete'));
     }
 
     /** @test */
@@ -224,7 +223,7 @@ class VaultTest extends TestCase
         $vault = Moneris::create($this->id, $this->token, $params)->cards();
 
         $response = $this->vault->add($this->card);
-        $key = $response->receipt()->DataKey;
+        $key = $response->receipt()->read('key');
 
         $params = array_merge($this->params, [
             'data_key' => $key,
@@ -237,15 +236,15 @@ class VaultTest extends TestCase
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
-        $this->assertEquals($key, $receipt->DataKey);
-        $this->assertEquals('true', $receipt->Complete);
+        $this->assertEquals($key, $receipt->read('key'));
+        $this->assertEquals(true, $receipt->read('complete'));
     }
 
     /** @test */
     public function it_can_pre_authorize_a_credit_card_stored_in_the_moneris_vault()
     {
         $response = $this->vault->add($this->card);
-        $key = $response->receipt()->DataKey;
+        $key = $response->receipt()->read('key');
 
         $params = array_merge($this->params, [
             'data_key' => $key,
@@ -255,8 +254,8 @@ class VaultTest extends TestCase
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
-        $this->assertEquals($key, $receipt->DataKey);
-        $this->assertEquals('true', $receipt->Complete);
+        $this->assertEquals($key, $receipt->read('key'));
+        $this->assertEquals(true, $receipt->read('complete'));
     }
 
     /** @test */
@@ -266,7 +265,7 @@ class VaultTest extends TestCase
         $vault = Moneris::create($this->id, $this->token, $params)->cards();
 
         $response = $this->vault->add($this->card);
-        $key = $response->receipt()->DataKey;
+        $key = $response->receipt()->read('key');
 
         $params = array_merge($this->params, [
             'data_key' => $key,
@@ -277,8 +276,8 @@ class VaultTest extends TestCase
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
-        $this->assertEquals($key, $receipt->DataKey);
-        $this->assertEquals('true', $receipt->Complete);
+        $this->assertEquals($key, $receipt->read('key'));
+        $this->assertEquals(true, $receipt->read('complete'));
     }
 
     /** @test */
@@ -288,7 +287,7 @@ class VaultTest extends TestCase
         $vault = Moneris::create($this->id, $this->token, $params)->cards();
 
         $response = $this->vault->add($this->card);
-        $key = $response->receipt()->DataKey;
+        $key = $response->receipt()->read('key');
 
         $params = array_merge($this->params, [
             'data_key' => $key,
@@ -301,15 +300,15 @@ class VaultTest extends TestCase
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
-        $this->assertEquals($key, $receipt->DataKey);
-        $this->assertEquals('true', $receipt->Complete);
+        $this->assertEquals($key, $receipt->read('key'));
+        $this->assertEquals(true, $receipt->read('complete'));
     }
 
     /** @test */
     public function it_can_capture_a_pre_authorized_credit_card_stored_in_the_moneris_vault()
     {
         $response = $this->vault->add($this->card);
-        $key = $response->receipt()->DataKey;
+        $key = $response->receipt()->read('key');
 
         $params = array_merge($this->params, [
             'data_key' => $key,
@@ -318,10 +317,8 @@ class VaultTest extends TestCase
         $response = $this->vault->preauth($params);
         $response = $this->vault->capture($response->transaction);
         $receipt = $response->receipt();
-        $key = $receipt->DataKey;
 
         $this->assertTrue($response->successful);
-        $this->assertEquals($key, $receipt->DataKey);
-        $this->assertEquals('true', $receipt->Complete);
+        $this->assertEquals(true, $receipt->read('complete'));
     }
 }
