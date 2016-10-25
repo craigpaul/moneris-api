@@ -111,12 +111,12 @@ class Response
     /**
      * Retrieve the transaction's receipt if it is available.
      *
-     * @return \SimpleXMLElement|\SimpleXMLElement[]|null
+     * @return \CraigPaul\Moneris\Receipt|null
      */
     public function receipt()
     {
         if (!is_null($response = $this->transaction->response)) {
-            return $response->receipt;
+            return new Receipt($response->receipt);
         }
 
         return null;
@@ -132,17 +132,17 @@ class Response
         $receipt = $this->receipt();
         $gateway = $this->transaction->gateway;
 
-        if ($receipt->ReceiptId === 'Global Error Receipt') {
+        if ($receipt->read('id') === 'Global Error Receipt') {
             $this->status = Response::GLOBAL_ERROR_RECEIPT;
             $this->successful = false;
 
             return $this;
         }
 
-        $code = (int)$receipt->ResponseCode;
+        $code = (int)$receipt->read('code');
 
         if ($code >= 50 || $code === 0) {
-            switch ($receipt->ResponseCode) {
+            switch ($receipt->read('code')) {
                 case '050':
                 case '074':
                 case 'null':
@@ -192,7 +192,7 @@ class Response
             return $this;
         }
 
-        $code = isset($receipt->AvsResultCode) ? (string)$receipt->AvsResultCode : false;
+        $code = $receipt->read('avs_result') ?? false;
 
         if ($gateway->avs && $code && $code !== 'null' && !in_array($code, $gateway->avsCodes)) {
             switch ($code) {
@@ -224,7 +224,7 @@ class Response
             return $this;
         }
 
-        $code = isset($receipt->CvdResultCode) ? (string)$receipt->CvdResultCode : null;
+        $code = $receipt->read('cvd_result') ?? null;
 
         if ($gateway->avs && !is_null($code) && $code !== 'null' && !in_array($code{1}, $gateway->cvdCodes)) {
             $this->status = Response::CVD;
