@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Client;
 use CraigPaul\Moneris\Crypt;
 use CraigPaul\Moneris\Moneris;
 use CraigPaul\Moneris\Response;
@@ -56,13 +57,13 @@ class ProcessorTest extends TestCase
             'expdate' => '2012',
         ];
         $this->transaction = new Transaction($this->gateway, $this->params);
-        $this->processor = new Processor();
+        $this->processor = new Processor(new Client());
     }
 
     /** @test */
     public function it_can_instantiate_via_the_constructor()
     {
-        $processor = new Processor();
+        $processor = new Processor(new Client());
 
         $this->assertEquals(Processor::class, get_class($processor));
     }

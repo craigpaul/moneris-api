@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Client;
 use CraigPaul\Moneris\Crypt;
 use CraigPaul\Moneris\Moneris;
 use CraigPaul\Moneris\Response;
@@ -63,7 +64,7 @@ class ResponseTest extends TestCase
             'expdate' => '2012',
         ];
         $this->transaction = new Transaction($this->gateway, $this->params);
-        $this->processor = new Processor();
+        $this->processor = new Processor(new Client());
     }
 
     /** @test */
