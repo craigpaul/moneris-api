@@ -59,6 +59,21 @@ class TransactionTest extends TestCase
     }
 
     /** @test */
+    public function it_converts_month_year_to_expdate()
+    {
+        $params = array_merge($this->params, [
+            'expiry_month' => '12',
+            'expiry_year' => '20'
+        ]);
+
+        unset($params['expdate']);
+
+        $transaction = new Transaction($this->gateway, $params);
+
+        $this->assertEquals('2012', $this->transaction->params['expdate']);
+    }
+
+    /** @test */
     public function it_can_prepare_parameters_that_were_submitted_improperly()
     {
         $order = '   1234-567890';
