@@ -2,6 +2,7 @@
 
 use GuzzleHttp\Client;
 use CraigPaul\Moneris\Crypt;
+use CraigPaul\Moneris\Receipt;
 use CraigPaul\Moneris\Moneris;
 use CraigPaul\Moneris\Response;
 use CraigPaul\Moneris\Processor;
@@ -109,10 +110,8 @@ class ResponseTest extends TestCase
         $receipt = $response->receipt();
 
         $this->assertNotNull($receipt);
-        $this->assertEquals(SimpleXMLElement::class, get_class($receipt));
-        $this->assertEquals($this->params['order_id'], $receipt->ReceiptId);
-        $this->assertObjectHasAttribute('TransID', $receipt);
-        $this->assertObjectHasAttribute('ReferenceNum', $receipt);
-        $this->assertObjectHasAttribute('Complete', $receipt);
+        $this->assertEquals(Receipt::class, get_class($receipt));
+        $this->assertEquals($this->params['order_id'], $receipt->read('id'));
+        $this->assertObjectHasAttribute('data', $receipt);
     }
 }
