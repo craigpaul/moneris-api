@@ -182,7 +182,9 @@ class Gateway
      */
     protected function process(Transaction $transaction)
     {
-        return Processor::process($transaction);
+        $processor = new Processor();
+
+        return $processor->process($transaction);
     }
 
     /**

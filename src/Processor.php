@@ -9,7 +9,7 @@ class Processor
      *
      * @var array
      */
-    protected static $config = [
+    protected $config = [
         'protocol' => 'https',
         'host' => 'esqa.moneris.com',
         'port' => '443',
@@ -23,7 +23,7 @@ class Processor
      *
      * @var string
      */
-    protected static $error = "<?xml version=\"1.0\"?><response><receipt><ReceiptId>Global Error Receipt</ReceiptId><ReferenceNum>null</ReferenceNum><ResponseCode>null</ResponseCode><ISO>null</ISO> <AuthCode>null</AuthCode><TransTime>null</TransTime><TransDate>null</TransDate><TransType>null</TransType><Complete>false</Complete><Message>null</Message><TransAmount>null</TransAmount><CardType>null</CardType><TransID>null</TransID><TimedOut>null</TimedOut></receipt></response>";
+    protected $error = "<?xml version=\"1.0\"?><response><receipt><ReceiptId>Global Error Receipt</ReceiptId><ReferenceNum>null</ReferenceNum><ResponseCode>null</ResponseCode><ISO>null</ISO> <AuthCode>null</AuthCode><TransTime>null</TransTime><TransDate>null</TransDate><TransType>null</TransType><Complete>false</Complete><Message>null</Message><TransAmount>null</TransAmount><CardType>null</CardType><TransID>null</TransID><TimedOut>null</TimedOut></receipt></response>";
 
     /**
      * Retrieve the API configuration.
@@ -32,13 +32,13 @@ class Processor
      *
      * @return array
      */
-    public static function config(string $environment)
+    public function config(string $environment)
     {
         if ($environment === Moneris::ENV_LIVE) {
-            self::$config['host'] = 'www3.moneris.com';
+            $this->config['host'] = 'www3.moneris.com';
         }
 
-        return self::$config;
+        return $this->config;
     }
 
     /**
@@ -49,7 +49,7 @@ class Processor
      *
      * @return \CraigPaul\Moneris\Response
      */
-    public static function process(Transaction $transaction)
+    public function process(Transaction $transaction)
     {
         if ($transaction->invalid()) {
             $response = new Response($transaction);
@@ -60,7 +60,7 @@ class Processor
             return $response;
         }
 
-        $response = self::submit($transaction);
+        $response = $this->submit($transaction);
 
         return $transaction->validate($response);
     }
@@ -70,9 +70,9 @@ class Processor
      *
      * @return \SimpleXMLElement
      */
-    protected static function error()
+    protected function error()
     {
-        return simplexml_load_string(self::$error);
+        return simplexml_load_string($this->error);
     }
 
     /**
@@ -84,7 +84,7 @@ class Processor
      *
      * @return string
      */
-    protected static function send(array $config, string $url, string $xml)
+    protected function send(array $config, string $url, string $xml)
     {
         $curl = curl_init();
 
@@ -111,24 +111,24 @@ class Processor
      *
      * @return \SimpleXMLElement|string
      */
-    protected static function submit(Transaction $transaction)
+    protected function submit(Transaction $transaction)
     {
-        $config = self::config($transaction->gateway->environment);
+        $config = $this->config($transaction->gateway->environment);
 
         $url = $config['protocol'].'://'.$config['host'].':'.$config['port'].$config['url'];
 
         $xml = str_replace(' </', '</', $transaction->toXml());
 
-        $response = self::send($config, $url, $xml);
+        $response = $this->send($config, $url, $xml);
 
         if (!$response) {
-            return self::error();
+            return $this->error();
         }
 
         $response = @simplexml_load_string($response);
 
         if ($response === false) {
-            return self::error();
+            return $this->error();
         }
 
         return $response;
