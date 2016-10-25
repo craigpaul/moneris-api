@@ -2,8 +2,15 @@
 
 namespace CraigPaul\Moneris;
 
+use GuzzleHttp\Client;
+
 class Processor
 {
+    /**
+     * @var \GuzzleHttp\Client
+     */
+    protected $client;
+
     /**
      * API configuration.
      *
@@ -15,7 +22,7 @@ class Processor
         'port' => '443',
         'url' => '/gateway2/servlet/MpgRequest',
         'api_version' => 'PHP - 2.5.6',
-        'timeout' => '60',
+        'timeout' => 60,
     ];
 
     /**
@@ -24,6 +31,16 @@ class Processor
      * @var string
      */
     protected $error = "<?xml version=\"1.0\"?><response><receipt><ReceiptId>Global Error Receipt</ReceiptId><ReferenceNum>null</ReferenceNum><ResponseCode>null</ResponseCode><ISO>null</ISO> <AuthCode>null</AuthCode><TransTime>null</TransTime><TransDate>null</TransDate><TransType>null</TransType><Complete>false</Complete><Message>null</Message><TransAmount>null</TransAmount><CardType>null</CardType><TransID>null</TransID><TimedOut>null</TimedOut></receipt></response>";
+
+    /**
+     * Create a new Processor instance.
+     *
+     * @param \GuzzleHttp\Client $client
+     */
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
 
     /**
      * Retrieve the API configuration.
@@ -86,22 +103,15 @@ class Processor
      */
     protected function send(array $config, string $url, string $xml)
     {
-        $curl = curl_init();
+        $response = $this->client->post($url, [
+            'body' => $xml,
+            'headers' => [
+                'User-Agent' => $config['api_version']
+            ],
+            'timeout' => $config['timeout']
+        ]);
 
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_HEADER, 0);
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $xml);
-        curl_setopt($curl, CURLOPT_TIMEOUT, $config['timeout']);
-        curl_setopt($curl, CURLOPT_USERAGENT, $config['api_version']);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-
-        return $response;
+        return $response->getBody()->getContents();
     }
 
     /**
