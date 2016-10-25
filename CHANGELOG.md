@@ -1,5 +1,11 @@
 #Moneris API Changelog
 
+###0.4.1 (2016-20-25)
+
+####Changed
+
+- Updates validation to provide title, field and code in errors for localization purposes [`e9888b9633`](https://github.com/craigpaul/moneris-api/commit/e9888b9633) 
+
 ###0.4.0 (2016-20-25)
 
 ####Added
