@@ -1,5 +1,17 @@
 #Moneris API Changelog
 
+###0.4.0 (2016-20-25)
+
+####Added
+
+- Adds 5.6 php to versions [`78200b2581`](https://github.com/craigpaul/moneris-api/commit/78200b2581) 
+
+####Changed
+
+- Removes type hints and updates docblocks [`f7950f5cbb`](https://github.com/craigpaul/moneris-api/commit/f7950f5cbb) 
+- Lowers php requirements to 5.6 [`466ad201af`](https://github.com/craigpaul/moneris-api/commit/466ad201af) 
+- Removes all php7 references for 5.6 support [`a69e6a1ef7`](https://github.com/craigpaul/moneris-api/commit/a69e6a1ef7) 
+
 ###0.3.0 (2016-10-25)
 
 ####Added
