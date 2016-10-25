@@ -8,11 +8,12 @@ trait Settable
      * Set a property that exists on the class.
      *
      * @param string $property
+     * @param mixed $value
      *
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __set(string $property, $value)
+    public function __set($property, $value)
     {
         if (property_exists($this, $property)) {
             $this->$property = $value;

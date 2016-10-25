@@ -12,7 +12,7 @@ trait Gettable
      * @throws \InvalidArgumentException
      * @return mixed
      */
-    public function __get(string $property)
+    public function __get($property)
     {
         if (property_exists($this, $property)) {
             return $this->$property;
