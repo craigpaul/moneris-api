@@ -1,5 +1,27 @@
 #Moneris API Changelog
 
+###0.5.0 (2016-20-25)
+
+####Changed
+
+- Changes amount cast to string [`57b0a212e0`](https://github.com/craigpaul/moneris-api/commit/57b0a212e0)
+- Updates customer tests to match new preparable setting [`6fa73e5961`](https://github.com/craigpaul/moneris-api/commit/6fa73e5961)
+- Adjusts customer to use preparable instead of direct setting [`85ba6e9f66`](https://github.com/craigpaul/moneris-api/commit/85ba6e9f66)
+- Extracts prepare method to preparable trait [`66deaddfd6`](https://github.com/craigpaul/moneris-api/commit/66deaddfd6)
+- Extracts param appender and accounts for recursion [`57f71419e2`](https://github.com/craigpaul/moneris-api/commit/57f71419e2)
+
+####Added
+
+- Adds proper setter for customer data [`9da220ec66`](https://github.com/craigpaul/moneris-api/commit/9da220ec66) 
+- Adds purchase with customer info tests [`fbff9e7f0d`](https://github.com/craigpaul/moneris-api/commit/fbff9e7f0d) 
+- Adds vault customer info pre authorization test [`01846f8956`](https://github.com/craigpaul/moneris-api/commit/01846f8956) 
+- Adds pre authorization test that includes customer info [`ca72ea6630`](https://github.com/craigpaul/moneris-api/commit/ca72ea6630)  
+- Adds faker for tests [`ccea71a15d`](https://github.com/craigpaul/moneris-api/commit/ccea71a15d)   
+- Adds extra normalization steps to prepare [`942b8d0b49`](https://github.com/craigpaul/moneris-api/commit/942b8d0b49)  
+- Adds customer attaching tests to vault credit card methods [`eb01acfc2c`](https://github.com/craigpaul/moneris-api/commit/eb01acfc2c) 
+- Adds missing customer information to add and update methods [`db07e976c8`](https://github.com/craigpaul/moneris-api/commit/db07e976c8)  
+- Adds string check to account for SimpleXMLElements being passed through [`43f3c92070`](https://github.com/craigpaul/moneris-api/commit/43f3c92070)
+
 ###0.4.1 (2016-20-25)
 
 ####Changed
