@@ -32,6 +32,11 @@ class VaultTest extends TestCase
     /**
      * @var array
      */
+    protected $items;
+
+    /**
+     * @var array
+     */
     protected $params;
 
     /**
@@ -71,11 +76,26 @@ class VaultTest extends TestCase
             'tax3' => '1.03',
             'shipping_cost' => '9.99',
         ];
+        $this->items = [
+            [
+                'name' => $faker->sentence(mt_rand(3, 6)),
+                'quantity' => '1',
+                'product_code' => $faker->isbn10,
+                'extended_amount' => $faker->randomFloat(2, 0.01, 999.99),
+            ],
+            [
+                'name' => $faker->sentence(mt_rand(3, 6)),
+                'quantity' => '1',
+                'product_code' => $faker->isbn10,
+                'extended_amount' => $faker->randomFloat(2, 0.01, 999.99),
+            ]
+        ];
         $this->customer = [
             'email' => 'example@email.com',
             'instructions' => $faker->sentence(mt_rand(3, 6)),
             'billing' => $this->billing,
-            'shipping' => $this->billing
+            'shipping' => $this->billing,
+            'items' => $this->items,
         ];
     }
 
@@ -273,12 +293,13 @@ class VaultTest extends TestCase
         $this->assertTrue($response->successful);
         $this->assertGreaterThan(0, count($receipt->read('data')));
 
-        foreach($cards as $index => $card) {
-            /** @var \CraigPaul\Moneris\Receipt $card */
-            $card = $card->receipt();
+        /** @var \CraigPaul\Moneris\Response $card */
+        foreach ($cards as $index => $card) {
+            /** @var \CraigPaul\Moneris\Receipt $rec */
+            $rec = $card->receipt();
 
-            $this->assertEquals($card->read('key'), $receipt->read('data')[$index]['data_key']);
-            $this->assertEquals($card->read('data')['masked_pan'], $receipt->read('data')[$index]['masked_pan']);
+            $this->assertEquals($rec->read('key'), $receipt->read('data')[$index]['data_key']);
+            $this->assertEquals($rec->read('data')['masked_pan'], $receipt->read('data')[$index]['masked_pan']);
         }
     }
 
