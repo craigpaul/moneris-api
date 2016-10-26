@@ -111,10 +111,10 @@ class Receipt
     private function setData(array $data)
     {
         return [
-            'customer_id' => isset($data['cust_id']) ? (is_string($data['cust_id']) ? $data['cust_id'] : $data['cust_id']->__toString()) : '',
-            'phone' => isset($data['phone']) ? $data['phone']->__toString() : '',
-            'email' => isset($data['email']) ? $data['email']->__toString() : '',
-            'note' => isset($data['note']) ? $data['note']->__toString() : '',
+            'customer_id' => isset($data['cust_id']) ? (is_string($data['cust_id']) ? $data['cust_id'] : $data['cust_id']->__toString()) : null,
+            'phone' => isset($data['phone']) ? (is_string($data['phone']) ? $data['phone'] : $data['phone']->__toString()) : null,
+            'email' => isset($data['email']) ? (is_string($data['email']) ? $data['email'] : $data['email']->__toString()) : null,
+            'note' => isset($data['note']) ? (is_string($data['note']) ? $data['note'] : $data['note']->__toString()) : null,
             'crypt' => isset($data['crypt_type']) ? intval($data['crypt_type']) : null,
             'masked_pan' => isset($data['masked_pan']) ? $data['masked_pan'] : null,
             'pan' => isset($data['pan']) ? $data['pan'] : null,
