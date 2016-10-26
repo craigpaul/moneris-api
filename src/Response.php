@@ -31,6 +31,7 @@ class Response
     const DUPLICATE_TRANSACTION = -19;
     const DECLINED              = -20;
     const NOT_AUTHORIZED        = -21;
+    const INVALID_EXPIRY_DATE   = -22;
 
     const CVD               = -4;
     const CVD_NO_MATCH      = -5;
@@ -133,7 +134,7 @@ class Response
         $gateway = $this->transaction->gateway;
 
         if ($receipt->read('id') === 'Global Error Receipt') {
-            $this->status = Response::GLOBAL_ERROR_RECEIPT;
+            $this->status = self::GLOBAL_ERROR_RECEIPT;
             $this->successful = false;
 
             return $this;
@@ -142,51 +143,7 @@ class Response
         $code = (int)$receipt->read('code');
 
         if ($code >= 50 || $code === 0) {
-            switch ($receipt->read('code')) {
-                case '050':
-                case '074':
-                case 'null':
-                    $this->status = Response::SYSTEM_UNAVAILABLE;
-                    break;
-                case '051':
-                case '482':
-                case '484':
-                    $this->status = Response::CARD_EXPIRED;
-                    break;
-                case '075':
-                    $this->status = Response::INVALID_CARD;
-                    break;
-                case '076':
-                case '079':
-                case '080':
-                case '081':
-                case '082':
-                case '083':
-                    $this->status = Response::INSUFFICIENT_FUNDS;
-                    break;
-                case '077':
-                    $this->status = Response::PREAUTH_FULL;
-                    break;
-                case '078':
-                    $this->status = Response::DUPLICATE_TRANSACTION;
-                    break;
-                case '481':
-                case '483':
-                    $this->status = Response::DECLINED;
-                    break;
-                case '485':
-                    $this->status = Response::NOT_AUTHORIZED;
-                    break;
-                case '486':
-                case '487':
-                case '489':
-                case '490':
-                    $this->status = Response::CVD;
-                    break;
-                default:
-                    $this->status = Response::ERROR;
-            }
-
+            $this->status = $this->convertReceiptCodeToStatus($receipt);
             $this->successful = false;
 
             return $this;
@@ -198,7 +155,7 @@ class Response
             switch ($code) {
                 case 'B':
                 case 'C':
-                    $this->status = Response::AVS_POSTAL_CODE;
+                    $this->status = self::AVS_POSTAL_CODE;
                     break;
                 case 'G':
                 case 'I':
@@ -206,16 +163,16 @@ class Response
                 case 'S':
                 case 'U':
                 case 'Z':
-                    $this->status = Response::AVS_ADDRESS;
+                    $this->status = self::AVS_ADDRESS;
                     break;
                 case 'N':
-                    $this->status = Response::AVS_NO_MATCH;
+                    $this->status = self::AVS_NO_MATCH;
                     break;
                 case 'R':
-                    $this->status = Response::AVS_TIMEOUT;
+                    $this->status = self::AVS_TIMEOUT;
                     break;
                 default:
-                    $this->status = Response::AVS;
+                    $this->status = self::AVS;
             }
 
             $this->failedAvs = true;
@@ -227,7 +184,7 @@ class Response
         $code = !is_null($receipt->read('cvd_result')) ? $receipt->read('cvd_result') : null;
 
         if ($gateway->avs && !is_null($code) && $code !== 'null' && !in_array($code{1}, $gateway->cvdCodes)) {
-            $this->status = Response::CVD;
+            $this->status = self::CVD;
             $this->failedCvd = true;
             $this->successful = false;
 
@@ -237,5 +194,79 @@ class Response
         $this->successful = true;
 
         return $this;
+    }
+
+    protected function convertReceiptCodeToStatus(Receipt $receipt) {
+        $code = $receipt->read('code');
+
+        if ($code === 'null' && $message_status = $this->convertReceiptMessageToStatus($receipt)) {
+            $status = $message_status;
+        } else {
+            switch ($receipt->read('code')) {
+                case '050':
+                case '074':
+                case 'null':
+                    $status = self::SYSTEM_UNAVAILABLE;
+                    break;
+                case '051':
+                case '482':
+                case '484':
+                    $status = self::CARD_EXPIRED;
+                    break;
+                case '075':
+                    $status = self::INVALID_CARD;
+                    break;
+
+                case '208':
+                case '475':
+                    $status = self::INVALID_EXPIRY_DATE;
+                    break;
+
+                case '076':
+                case '079':
+                case '080':
+                case '081':
+                case '082':
+                case '083':
+                    $status = self::INSUFFICIENT_FUNDS;
+                    break;
+                case '077':
+                    $status = self::PREAUTH_FULL;
+                    break;
+                case '078':
+                    $status = self::DUPLICATE_TRANSACTION;
+                    break;
+                case '481':
+                case '483':
+                    $status = self::DECLINED;
+                    break;
+                case '485':
+                    $status = self::NOT_AUTHORIZED;
+                    break;
+                case '486':
+                case '487':
+                case '489':
+                case '490':
+                    $status = self::CVD;
+                    break;
+                default:
+                    $status = self::ERROR;
+            }
+        }
+
+        return $status;
+    }
+
+    protected function convertReceiptMessageToStatus(Receipt $receipt) {
+        $message = (string)$receipt->read('message');
+        $status = null;
+
+        if (preg_match('/invalid pan/i', $message)) {
+            $status = self::INVALID_CARD;
+        } else if (preg_match('/invalid expiry date/i', $message)) {
+            $status = self::INVALID_EXPIRY_DATE;
+        }
+
+        return $status;
     }
 }
