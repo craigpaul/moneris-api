@@ -1,5 +1,22 @@
 #Moneris API Changelog
 
+###0.5.2 (2016-20-26)
+
+####Changed
+
+- Renames mocks to stubs [`78014491e2`](https://github.com/craigpaul/moneris-api/commit/78014491e2)
+- Renames Stubs to mocks [`f6ce06e709`](https://github.com/craigpaul/moneris-api/commit/f6ce06e709)
+- Updates expiring test to have a mocked response to overcome Moneris Api limits [`d3a813df34`](https://github.com/craigpaul/moneris-api/commit/d3a813df34)
+- Removes old gitkeep files [`4d5a293a26`](https://github.com/craigpaul/moneris-api/commit/4d5a293a26)
+- Autoloads stubs in development [`3db6228eda`](https://github.com/craigpaul/moneris-api/commit/3db6228eda)
+
+####Added
+   
+- Adds mock handler helper function [`ac85c82adf`](https://github.com/craigpaul/moneris-api/commit/ac85c82adf) 
+- Adds logic to get all ResolveData keys when more then one exists in the response [`c2393778da`](https://github.com/craigpaul/moneris-api/commit/c2393778da) 
+- Adds docblock entry for transaction [`efed307cd7`](https://github.com/craigpaul/moneris-api/commit/efed307cd7)   
+- Adds an expiring card stub [`d6c3cabb06`](https://github.com/craigpaul/moneris-api/commit/d6c3cabb06) 
+
 ###0.5.1 (2016-20-25)
 
 ####Changed
