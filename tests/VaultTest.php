@@ -1,5 +1,6 @@
 <?php
 
+use Faker\Factory as Faker;
 use CraigPaul\Moneris\Vault;
 use CraigPaul\Moneris\Moneris;
 use CraigPaul\Moneris\Customer;
@@ -298,6 +299,48 @@ class VaultTest extends TestCase
 
         $params = array_merge($this->params, [
             'data_key' => $key,
+        ]);
+
+        $response = $this->vault->preauth($params);
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertEquals($key, $receipt->read('key'));
+        $this->assertEquals(true, $receipt->read('complete'));
+    }
+
+    /** @test */
+    public function it_can_pre_authorize_a_credit_card_stored_in_the_moneris_vault_and_attach_customer_info()
+    {
+        $response = $this->vault->add($this->card);
+        $key = $response->receipt()->read('key');
+
+        $faker = Faker::create();
+        $customer = [
+            'first_name' => $faker->firstName,
+            'last_name' => $faker->lastName,
+            'company_name' => $faker->company,
+            'address' => $faker->streetAddress,
+            'city' => $faker->city,
+            'province' => 'SK',
+            'postal_code' => 'X0X0X0',
+            'country' => 'Canada',
+            'phone_number' => '555-555-5555',
+            'fax' => '555-555-5555',
+            'tax1' => '1.01',
+            'tax2' => '1.02',
+            'tax3' => '1.03',
+            'shipping_cost' => '9.99',
+        ];
+        $params = array_merge($this->params, [
+            'data_key' => $key,
+            'cust_id' => uniqid('customer-', true),
+            'cust_info' => [
+                'email' => 'example@email.com',
+                'instructions' => $faker->sentence(mt_rand(3, 6)),
+                'billing' => $customer,
+                'shipping' => $customer
+            ],
         ]);
 
         $response = $this->vault->preauth($params);
