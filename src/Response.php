@@ -31,6 +31,7 @@ class Response
     const DUPLICATE_TRANSACTION = -19;
     const DECLINED              = -20;
     const NOT_AUTHORIZED        = -21;
+    const INVALID_EXPIRY_DATE   = -22;
 
     const CVD               = -4;
     const CVD_NO_MATCH      = -5;
@@ -142,51 +143,7 @@ class Response
         $code = (int)$receipt->read('code');
 
         if ($code >= 50 || $code === 0) {
-            switch ($receipt->read('code')) {
-                case '050':
-                case '074':
-                case 'null':
-                    $this->status = Response::SYSTEM_UNAVAILABLE;
-                    break;
-                case '051':
-                case '482':
-                case '484':
-                    $this->status = Response::CARD_EXPIRED;
-                    break;
-                case '075':
-                    $this->status = Response::INVALID_CARD;
-                    break;
-                case '076':
-                case '079':
-                case '080':
-                case '081':
-                case '082':
-                case '083':
-                    $this->status = Response::INSUFFICIENT_FUNDS;
-                    break;
-                case '077':
-                    $this->status = Response::PREAUTH_FULL;
-                    break;
-                case '078':
-                    $this->status = Response::DUPLICATE_TRANSACTION;
-                    break;
-                case '481':
-                case '483':
-                    $this->status = Response::DECLINED;
-                    break;
-                case '485':
-                    $this->status = Response::NOT_AUTHORIZED;
-                    break;
-                case '486':
-                case '487':
-                case '489':
-                case '490':
-                    $this->status = Response::CVD;
-                    break;
-                default:
-                    $this->status = Response::ERROR;
-            }
-
+            $this->status = $this->convertReceiptCodeToStatus($receipt);
             $this->successful = false;
 
             return $this;
@@ -237,5 +194,79 @@ class Response
         $this->successful = true;
 
         return $this;
+    }
+
+    protected function convertReceiptCodeToStatus(Receipt $receipt) {
+        $code = $receipt->read('code');
+
+        if ($code === 'null' && $message_status = $this->convertReceiptMessageToStatus($receipt)) {
+            $status = $message_status;
+        } else {
+            switch ($receipt->read('code')) {
+                case '050':
+                case '074':
+                case 'null':
+                    $status = Response::SYSTEM_UNAVAILABLE;
+                    break;
+                case '051':
+                case '482':
+                case '484':
+                    $status = Response::CARD_EXPIRED;
+                    break;
+                case '075':
+                    $status = Response::INVALID_CARD;
+                    break;
+
+                case '208':
+                case '475':
+                    $status = Response::INVALID_EXPIRY_DATE;
+                    break;
+
+                case '076':
+                case '079':
+                case '080':
+                case '081':
+                case '082':
+                case '083':
+                    $status = Response::INSUFFICIENT_FUNDS;
+                    break;
+                case '077':
+                    $status = Response::PREAUTH_FULL;
+                    break;
+                case '078':
+                    $status = Response::DUPLICATE_TRANSACTION;
+                    break;
+                case '481':
+                case '483':
+                    $status = Response::DECLINED;
+                    break;
+                case '485':
+                    $status = Response::NOT_AUTHORIZED;
+                    break;
+                case '486':
+                case '487':
+                case '489':
+                case '490':
+                    $status = Response::CVD;
+                    break;
+                default:
+                    $status = Response::ERROR;
+            }
+        }
+
+        return $status;
+    }
+
+    protected function convertReceiptMessageToStatus(Receipt $receipt) {
+        $message = (string)$receipt->read('message');
+        $status = null;
+
+        if (preg_match('/invalid pan/i', $message)) {
+            $status = Response::INVALID_CARD;
+        } else if (preg_match('/invalid expiry date/i', $message)) {
+            $status = Response::INVALID_EXPIRY_DATE;
+        }
+
+        return $status;
     }
 }
