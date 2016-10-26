@@ -84,9 +84,19 @@ class Transaction
     {
         foreach ($params as $key => $value) {
             if (is_array($value)) {
-                $parent = $type->addChild($key);
+                if ($key === 'items') {
+                    foreach ($value as $item) {
+                        $parent = $type->addChild('item');
+                        $parent->addChild('name', isset($item['name']) ? $item['name'] : '');
+                        $parent->addChild('quantity', isset($item['quantity']) ? $item['quantity'] : '');
+                        $parent->addChild('product_code', isset($item['product_code']) ? $item['product_code'] : '');
+                        $parent->addChild('extended_amount', isset($item['extended_amount']) ? $item['extended_amount'] : '');
+                    }
+                } else {
+                    $parent = $type->addChild($key);
 
-                $this->append($value, $parent);
+                    $this->append($value, $parent);
+                }
             } else {
                 $type->addChild($key, $value);
             }
