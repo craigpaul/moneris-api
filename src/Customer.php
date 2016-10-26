@@ -13,7 +13,7 @@ namespace CraigPaul\Moneris;
  */
 class Customer
 {
-    use Gettable, Preparable, Settable;
+    use Preparable;
 
     /**
      * The Customer data.
@@ -70,5 +70,25 @@ class Customer
         }
 
         throw new \InvalidArgumentException('['.get_class($this).'] does not contain a property named ['.$property.']');
+    }
+
+    /**
+     * Set a property that exists on the class.
+     *
+     * @param string $property
+     * @param mixed $value
+     *
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function __set($property, $value)
+    {
+        if (property_exists($this, $property)) {
+            $this->$property = $value;
+        } else if (!is_null($this->data)) {
+            $this->data[$property] = $value;
+        } else {
+            throw new \InvalidArgumentException('['.get_class($this).'] does not contain a property named ['.$property.']');
+        }
     }
 }
