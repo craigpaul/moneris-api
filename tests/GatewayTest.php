@@ -1,5 +1,6 @@
 <?php
 
+use Faker\Factory as Faker;
 use CraigPaul\Moneris\Vault;
 use CraigPaul\Moneris\Gateway;
 use CraigPaul\Moneris\Moneris;
@@ -113,6 +114,44 @@ class GatewayTest extends TestCase
 
         $this->assertEquals(Response::class, get_class($response));
         $this->assertTrue($response->successful);
+    }
+
+    /** @test */
+    public function it_can_pre_authorize_a_purchase_with_provided_customer_information_and_receive_a_response()
+    {
+        $faker = Faker::create();
+        $customer = [
+            'first_name' => $faker->firstName,
+            'last_name' => $faker->lastName,
+            'company_name' => $faker->company,
+            'address' => $faker->streetAddress,
+            'city' => $faker->city,
+            'province' => 'SK',
+            'postal_code' => 'X0X0X0',
+            'country' => 'Canada',
+            'phone_number' => '555-555-5555',
+            'fax' => '555-555-5555',
+            'tax1' => '1.01',
+            'tax2' => '1.02',
+            'tax3' => '1.03',
+            'shipping_cost' => '9.99',
+        ];
+        $params = array_merge($this->params, [
+            'cust_id' => uniqid('customer-', true),
+            'cust_info' => [
+                'email' => 'example@email.com',
+                'instructions' => $faker->sentence(mt_rand(3, 6)),
+                'billing' => $customer,
+                'shipping' => $customer
+            ],
+        ]);
+        $response = $this->gateway->preauth($params);
+        $receipt = $response->receipt();
+
+        $this->assertEquals(Response::class, get_class($response));
+        $this->assertTrue($response->successful);
+        $this->assertTrue($receipt->read('complete'));
+        $this->assertNotNull($receipt->read('transaction'));
     }
 
     /** @test */
