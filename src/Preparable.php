@@ -19,7 +19,11 @@ trait Preparable
             $key = $param['key'];
             $property = $param['property'];
 
-            $array[$property] = isset($data->$key) && !is_null($data->$key) ? $data->$key : null;
+            if (is_array($data)) {
+                $array[$property] = isset($data[$key]) && !is_null($data[$key]) ? $data[$key] : null;
+            } else {
+                $array[$property] = isset($data->$key) && !is_null($data->$key) ? $data->$key : null;
+            }
 
             if (isset($param['cast'])) {
                 switch ($param['cast']) {
