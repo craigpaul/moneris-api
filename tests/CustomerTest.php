@@ -10,10 +10,7 @@ class CustomerTest extends TestCase
         $customer = new Customer();
 
         $this->assertEquals(Customer::class, get_class($customer));
-        $this->assertObjectHasAttribute('id', $customer);
-        $this->assertObjectHasAttribute('email', $customer);
-        $this->assertObjectHasAttribute('phone', $customer);
-        $this->assertObjectHasAttribute('note', $customer);
+        $this->assertObjectHasAttribute('data', $customer);
     }
 
     /** @test */
@@ -22,9 +19,23 @@ class CustomerTest extends TestCase
         $customer = Customer::create();
 
         $this->assertEquals(Customer::class, get_class($customer));
-        $this->assertObjectHasAttribute('id', $customer);
-        $this->assertObjectHasAttribute('email', $customer);
-        $this->assertObjectHasAttribute('phone', $customer);
-        $this->assertObjectHasAttribute('note', $customer);
+        $this->assertObjectHasAttribute('data', $customer);
+    }
+
+    /** @test */
+    public function it_can_access_customer_data_that_exists_on_the_class()
+    {
+        $params = [
+            'id' => uniqid('customer-', true),
+            'email' => 'example@email.com',
+            'phone' => '555-555-5555',
+            'note' => 'Customer note',
+        ];
+        $customer = Customer::create($params);
+
+        $this->assertEquals($params['id'], $customer->id);
+        $this->assertEquals($params['email'], $customer->email);
+        $this->assertEquals($params['phone'], $customer->phone);
+        $this->assertEquals($params['note'], $customer->note);
     }
 }
