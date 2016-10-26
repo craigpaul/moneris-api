@@ -9,6 +9,20 @@ use CraigPaul\Moneris\Response;
 class GatewayTest extends TestCase
 {
     /**
+     * The billing / shipping info for customer info requests.
+     *
+     * @var array
+     */
+    protected $billing;
+
+    /**
+     * The customer info for customer info requests.
+     *
+     * @var array
+     */
+    protected $customer;
+
+    /**
      * The Moneris gateway.
      *
      * @var \CraigPaul\Moneris\Gateway
@@ -31,6 +45,7 @@ class GatewayTest extends TestCase
     {
         parent::setUp();
 
+        $faker = Faker::create();
         $params = ['environment' => $this->environment];
         $this->gateway = Moneris::create($this->id, $this->token, $params);
         $this->params = [
@@ -38,6 +53,28 @@ class GatewayTest extends TestCase
             'amount' => '1.00',
             'credit_card' => $this->visa,
             'expdate' => '2012',
+        ];
+        $this->billing = [
+            'first_name' => $faker->firstName,
+            'last_name' => $faker->lastName,
+            'company_name' => $faker->company,
+            'address' => $faker->streetAddress,
+            'city' => $faker->city,
+            'province' => 'SK',
+            'postal_code' => 'X0X0X0',
+            'country' => 'Canada',
+            'phone_number' => '555-555-5555',
+            'fax' => '555-555-5555',
+            'tax1' => '1.01',
+            'tax2' => '1.02',
+            'tax3' => '1.03',
+            'shipping_cost' => '9.99',
+        ];
+        $this->customer = [
+            'email' => 'example@email.com',
+            'instructions' => $faker->sentence(mt_rand(3, 6)),
+            'billing' => $this->billing,
+            'shipping' => $this->billing
         ];
     }
 
@@ -67,6 +104,23 @@ class GatewayTest extends TestCase
 
         $this->assertEquals(Response::class, get_class($response));
         $this->assertTrue($response->successful);
+    }
+
+    /** @test */
+    public function it_can_make_a_purchase_with_provided_customer_information_and_receive_a_response()
+    {
+        $params = array_merge($this->params, [
+            'cust_id' => uniqid('customer-', true),
+            'cust_info' => $this->customer,
+        ]);
+
+        $response = $this->gateway->purchase($params);
+        $receipt = $response->receipt();
+
+        $this->assertEquals(Response::class, get_class($response));
+        $this->assertTrue($response->successful);
+        $this->assertTrue($receipt->read('complete'));
+        $this->assertNotNull($receipt->read('transaction'));
     }
 
     /** @test */
@@ -119,32 +173,11 @@ class GatewayTest extends TestCase
     /** @test */
     public function it_can_pre_authorize_a_purchase_with_provided_customer_information_and_receive_a_response()
     {
-        $faker = Faker::create();
-        $customer = [
-            'first_name' => $faker->firstName,
-            'last_name' => $faker->lastName,
-            'company_name' => $faker->company,
-            'address' => $faker->streetAddress,
-            'city' => $faker->city,
-            'province' => 'SK',
-            'postal_code' => 'X0X0X0',
-            'country' => 'Canada',
-            'phone_number' => '555-555-5555',
-            'fax' => '555-555-5555',
-            'tax1' => '1.01',
-            'tax2' => '1.02',
-            'tax3' => '1.03',
-            'shipping_cost' => '9.99',
-        ];
         $params = array_merge($this->params, [
             'cust_id' => uniqid('customer-', true),
-            'cust_info' => [
-                'email' => 'example@email.com',
-                'instructions' => $faker->sentence(mt_rand(3, 6)),
-                'billing' => $customer,
-                'shipping' => $customer
-            ],
+            'cust_info' => $this->customer,
         ]);
+
         $response = $this->gateway->preauth($params);
         $receipt = $response->receipt();
 

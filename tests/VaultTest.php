@@ -9,9 +9,23 @@ use CraigPaul\Moneris\CreditCard;
 class VaultTest extends TestCase
 {
     /**
+     * The billing / shipping info for customer info requests.
+     *
+     * @var array
+     */
+    protected $billing;
+
+    /**
      * @var \CraigPaul\Moneris\CreditCard
      */
     protected $card;
+
+    /**
+     * The customer info for customer info requests.
+     *
+     * @var array
+     */
+    protected $customer;
 
     /**
      * @var array
@@ -32,12 +46,35 @@ class VaultTest extends TestCase
     {
         parent::setUp();
 
+        $faker = Faker::create();
         $this->card = CreditCard::create($this->visa, '2012');
         $this->params = [
             'order_id' => uniqid('1234-567890', true),
             'amount' => '1.00',
         ];
         $this->vault = Vault::create($this->id, $this->token, $this->environment);
+        $this->billing = [
+            'first_name' => $faker->firstName,
+            'last_name' => $faker->lastName,
+            'company_name' => $faker->company,
+            'address' => $faker->streetAddress,
+            'city' => $faker->city,
+            'province' => 'SK',
+            'postal_code' => 'X0X0X0',
+            'country' => 'Canada',
+            'phone_number' => '555-555-5555',
+            'fax' => '555-555-5555',
+            'tax1' => '1.01',
+            'tax2' => '1.02',
+            'tax3' => '1.03',
+            'shipping_cost' => '9.99',
+        ];
+        $this->customer = [
+            'email' => 'example@email.com',
+            'instructions' => $faker->sentence(mt_rand(3, 6)),
+            'billing' => $this->billing,
+            'shipping' => $this->billing
+        ];
     }
 
     /** @test */
@@ -246,6 +283,26 @@ class VaultTest extends TestCase
     }
 
     /** @test */
+    public function it_can_make_a_purchase_with_a_credit_card_stored_in_the_moneris_vault_and_attach_customer_info()
+    {
+        $response = $this->vault->add($this->card);
+        $key = $response->receipt()->read('key');
+
+        $params = array_merge($this->params, [
+            'data_key' => $key,
+            'cust_id' => uniqid('customer-', true),
+            'cust_info' => $this->customer,
+        ]);
+
+        $response = $this->vault->purchase($params);
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertEquals($key, $receipt->read('key'));
+        $this->assertEquals(true, $receipt->read('complete'));
+    }
+
+    /** @test */
     public function it_can_submit_a_cvd_secured_purchase_with_a_credit_card_stored_in_the_moneris_vault()
     {
         $params = ['environment' => Moneris::ENV_TESTING, 'cvd' => true];
@@ -315,32 +372,10 @@ class VaultTest extends TestCase
         $response = $this->vault->add($this->card);
         $key = $response->receipt()->read('key');
 
-        $faker = Faker::create();
-        $customer = [
-            'first_name' => $faker->firstName,
-            'last_name' => $faker->lastName,
-            'company_name' => $faker->company,
-            'address' => $faker->streetAddress,
-            'city' => $faker->city,
-            'province' => 'SK',
-            'postal_code' => 'X0X0X0',
-            'country' => 'Canada',
-            'phone_number' => '555-555-5555',
-            'fax' => '555-555-5555',
-            'tax1' => '1.01',
-            'tax2' => '1.02',
-            'tax3' => '1.03',
-            'shipping_cost' => '9.99',
-        ];
         $params = array_merge($this->params, [
             'data_key' => $key,
             'cust_id' => uniqid('customer-', true),
-            'cust_info' => [
-                'email' => 'example@email.com',
-                'instructions' => $faker->sentence(mt_rand(3, 6)),
-                'billing' => $customer,
-                'shipping' => $customer
-            ],
+            'cust_info' => $this->customer,
         ]);
 
         $response = $this->vault->preauth($params);
