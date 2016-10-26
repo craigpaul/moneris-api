@@ -14,6 +14,7 @@ use GuzzleHttp\Client;
  * @property-read string $environment
  * @property-read string $id
  * @property-read string $token
+ * @property \CraigPaul\Moneris\Transaction $transaction
  */
 class Gateway
 {
