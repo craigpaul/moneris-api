@@ -5,42 +5,22 @@ namespace CraigPaul\Moneris;
 /**
  * CraigPaul\Moneris\Customer
  *
- * @property string|null $id
- * @property string|null $email
- * @property string|null $phone
- * @property string|null $note
+ * @property array $data
+ * @property string $email
+ * @property string $id
+ * @property string $note
+ * @property string $phone
  */
 class Customer
 {
-    use Gettable, Settable;
+    use Gettable, Preparable, Settable;
 
     /**
-     * The Customer ID.
+     * The Customer data.
      *
-     * @var string
+     * @var array
      */
-    protected $id;
-
-    /**
-     * The Customer email.
-     *
-     * @var string
-     */
-    protected $email;
-
-    /**
-     * The Customer phone.
-     *
-     * @var string
-     */
-    protected $phone;
-
-    /**
-     * The Customer note.
-     *
-     * @var string
-     */
-    protected $note;
+    protected $data = [];
 
     /**
      * Create a new Customer instance.
@@ -51,10 +31,12 @@ class Customer
      */
     public function __construct(array $params = [])
     {
-        $this->id = isset($params['id']) ? $params['id'] : null;
-        $this->email = isset($params['email']) ? $params['email'] : null;
-        $this->phone = isset($params['phone']) ? $params['phone'] : null;
-        $this->note = isset($params['note']) ? $params['note'] : null;
+        $this->data = $this->prepare($params, [
+            ['property' => 'id', 'key' => 'id'],
+            ['property' => 'email', 'key' => 'email'],
+            ['property' => 'phone', 'key' => 'phone'],
+            ['property' => 'note', 'key' => 'note'],
+        ]);
     }
 
     /**
@@ -67,5 +49,26 @@ class Customer
     public static function create(array $params = [])
     {
         return new static($params);
+    }
+
+    /**
+     * Retrieve a property off of the class.
+     *
+     * @param string $property
+     *
+     * @throws \InvalidArgumentException
+     * @return mixed
+     */
+    public function __get($property)
+    {
+        if (property_exists($this, $property)) {
+            return $this->$property;
+        }
+
+        if (isset($this->data[$property]) && !is_null($this->data[$property])) {
+            return $this->data[$property];
+        }
+
+        throw new \InvalidArgumentException('['.get_class($this).'] does not contain a property named ['.$property.']');
     }
 }
