@@ -27,7 +27,7 @@
     },
     "autoload-dev": {
         "classmap": [
-            "tests/mocks/",
+            "tests/stubs/",
             "tests/TestCase.php"
         ],
         "files": [
