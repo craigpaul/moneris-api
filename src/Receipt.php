@@ -19,7 +19,7 @@ class Receipt
     public function __construct($data)
     {
         $this->data = $this->prepare($data, [
-            ['property' => 'amount', 'key' => 'TransAmount', 'cast' => 'float'],
+            ['property' => 'amount', 'key' => 'TransAmount', 'cast' => 'string'],
             ['property' => 'authorization', 'key' => 'AuthCode', 'cast' => 'string'],
             ['property' => 'avs_result', 'key' => 'AvsResultCode', 'cast' => 'string'],
             ['property' => 'card', 'key' => 'CardType', 'cast' => 'string'],
