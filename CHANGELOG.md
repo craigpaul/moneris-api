@@ -1,5 +1,18 @@
 #Moneris API Changelog
 
+###0.5.1 (2016-20-25)
+
+####Changed
+ 
+- Response:: => self:: [`61192d0b5e`](https://github.com/craigpaul/moneris-api/commit/61192d0b5e)  
+- Fix test + sprintf formatting [`a88c97b7dc`](https://github.com/craigpaul/moneris-api/commit/a88c97b7dc)  
+- Fix typo with expdate. [`aaf3f8dfd7`](https://github.com/craigpaul/moneris-api/commit/aaf3f8dfd7) 
+
+####Added
+
+- Add some extra handling for invalid cc / exp date where moneris doesnt return a status code. [`63bcbad7ef`](https://github.com/craigpaul/moneris-api/commit/63bcbad7ef)
+- Add unit test for expdate conversion [`4c99e6f1ed`](https://github.com/craigpaul/moneris-api/commit/4c99e6f1ed)
+
 ###0.5.0 (2016-20-25)
 
 ####Changed
