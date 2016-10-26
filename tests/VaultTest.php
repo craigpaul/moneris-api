@@ -4,7 +4,9 @@ use Faker\Factory as Faker;
 use CraigPaul\Moneris\Vault;
 use CraigPaul\Moneris\Moneris;
 use CraigPaul\Moneris\Customer;
+use CraigPaul\Moneris\Processor;
 use CraigPaul\Moneris\CreditCard;
+use CraigPaul\Moneris\Transaction;
 
 class VaultTest extends TestCase
 {
@@ -249,19 +251,35 @@ class VaultTest extends TestCase
     public function it_can_retrieve_all_expiring_credit_cards_from_the_moneris_vault()
     {
         $expiry = date('ym', strtotime('today + 10 days'));
+        $cards = [];
 
         $card = CreditCard::create($this->visa, $expiry);
-        $this->vault->add($card);
+        $cards[] = $this->vault->add($card);
         $card = CreditCard::create($this->mastercard, $expiry);
-        $this->vault->add($card);
+        $cards[] = $this->vault->add($card);
         $card = CreditCard::create($this->amex, $expiry);
-        $this->vault->add($card);
+        $cards[] = $this->vault->add($card);
 
-        $response = $this->vault->expiring();
+        $client = mock_handler((new VaultExpiringStub())->render($cards));
+
+        $params = ['type' => 'res_get_expiring'];
+        $transaction = new Transaction($this->vault, $params);
+        $this->vault->transaction = $transaction;
+        $processor = new Processor($client);
+
+        $response = $processor->process($transaction);
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
         $this->assertGreaterThan(0, count($receipt->read('data')));
+
+        foreach($cards as $index => $card) {
+            /** @var \CraigPaul\Moneris\Receipt $card */
+            $card = $card->receipt();
+
+            $this->assertEquals($card->read('key'), $receipt->read('data')[$index]['data_key']);
+            $this->assertEquals($card->read('data')['masked_pan'], $receipt->read('data')[$index]['masked_pan']);
+        }
     }
 
     /** @test */
