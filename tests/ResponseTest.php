@@ -114,4 +114,36 @@ class ResponseTest extends TestCase
         $this->assertEquals($this->params['order_id'], $receipt->read('id'));
         $this->assertObjectHasAttribute('data', $receipt);
     }
+
+    /** @test */
+    public function it_processes_expdate_error_edge_cases_from_message()
+    {
+        $response = $this->process_transaction([
+            'expdate' => 'foo'
+        ]);
+
+        $this->assertFalse($response->successful);
+        $this->assertEquals(Response::INVALID_EXPIRY_DATE, $response->status);
+    }
+
+    /** @test */
+    public function it_processes_credit_card_error_edge_cases_from_message()
+    {
+        $response = $this->process_transaction([
+            'credit_card' => '1234'
+        ]);
+
+        $this->assertFalse($response->successful);
+        $this->assertEquals(Response::INVALID_CARD, $response->status);
+    }
+
+    protected function process_transaction($extra_params = []) {
+        $this->params = array_merge($this->params, $extra_params);
+        $this->transaction = new Transaction($this->gateway, $this->params);
+
+        $response = $this->processor->process($this->transaction);
+        $response = $response->validate();
+
+        return $response;
+    }
 }
