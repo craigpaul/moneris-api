@@ -70,7 +70,7 @@ class TransactionTest extends TestCase
 
         $transaction = new Transaction($this->gateway, $params);
 
-        $this->assertEquals('2012', $this->transaction->params['expdate']);
+        $this->assertEquals('2012', $transaction->params['expdate']);
     }
 
     /** @test */
