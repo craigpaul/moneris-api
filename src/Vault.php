@@ -43,6 +43,15 @@ class Vault extends Gateway
             'expdate' => $card->expiry,
         ];
 
+        if (!is_null($card->customer)) {
+            $params = array_merge($params, [
+                'cust_id' => $card->customer->id,
+                'phone' => $card->customer->phone,
+                'email' => $card->customer->email,
+                'note' => $card->customer->note,
+            ]);
+        }
+
         $transaction = $this->transaction($params);
 
         return $this->process($transaction);
@@ -198,6 +207,15 @@ class Vault extends Gateway
             'pan' => $card->number,
             'expdate' => $card->expiry,
         ];
+
+        if (!is_null($card->customer)) {
+            $params = array_merge($params, [
+                'cust_id' => $card->customer->id,
+                'phone' => $card->customer->phone,
+                'email' => $card->customer->email,
+                'note' => $card->customer->note,
+            ]);
+        }
 
         $transaction = $this->transaction($params);
 
