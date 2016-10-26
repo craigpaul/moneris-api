@@ -134,7 +134,7 @@ class Response
         $gateway = $this->transaction->gateway;
 
         if ($receipt->read('id') === 'Global Error Receipt') {
-            $this->status = Response::GLOBAL_ERROR_RECEIPT;
+            $this->status = self::GLOBAL_ERROR_RECEIPT;
             $this->successful = false;
 
             return $this;
@@ -155,7 +155,7 @@ class Response
             switch ($code) {
                 case 'B':
                 case 'C':
-                    $this->status = Response::AVS_POSTAL_CODE;
+                    $this->status = self::AVS_POSTAL_CODE;
                     break;
                 case 'G':
                 case 'I':
@@ -163,16 +163,16 @@ class Response
                 case 'S':
                 case 'U':
                 case 'Z':
-                    $this->status = Response::AVS_ADDRESS;
+                    $this->status = self::AVS_ADDRESS;
                     break;
                 case 'N':
-                    $this->status = Response::AVS_NO_MATCH;
+                    $this->status = self::AVS_NO_MATCH;
                     break;
                 case 'R':
-                    $this->status = Response::AVS_TIMEOUT;
+                    $this->status = self::AVS_TIMEOUT;
                     break;
                 default:
-                    $this->status = Response::AVS;
+                    $this->status = self::AVS;
             }
 
             $this->failedAvs = true;
@@ -184,7 +184,7 @@ class Response
         $code = !is_null($receipt->read('cvd_result')) ? $receipt->read('cvd_result') : null;
 
         if ($gateway->avs && !is_null($code) && $code !== 'null' && !in_array($code{1}, $gateway->cvdCodes)) {
-            $this->status = Response::CVD;
+            $this->status = self::CVD;
             $this->failedCvd = true;
             $this->successful = false;
 
@@ -206,20 +206,20 @@ class Response
                 case '050':
                 case '074':
                 case 'null':
-                    $status = Response::SYSTEM_UNAVAILABLE;
+                    $status = self::SYSTEM_UNAVAILABLE;
                     break;
                 case '051':
                 case '482':
                 case '484':
-                    $status = Response::CARD_EXPIRED;
+                    $status = self::CARD_EXPIRED;
                     break;
                 case '075':
-                    $status = Response::INVALID_CARD;
+                    $status = self::INVALID_CARD;
                     break;
 
                 case '208':
                 case '475':
-                    $status = Response::INVALID_EXPIRY_DATE;
+                    $status = self::INVALID_EXPIRY_DATE;
                     break;
 
                 case '076':
@@ -228,29 +228,29 @@ class Response
                 case '081':
                 case '082':
                 case '083':
-                    $status = Response::INSUFFICIENT_FUNDS;
+                    $status = self::INSUFFICIENT_FUNDS;
                     break;
                 case '077':
-                    $status = Response::PREAUTH_FULL;
+                    $status = self::PREAUTH_FULL;
                     break;
                 case '078':
-                    $status = Response::DUPLICATE_TRANSACTION;
+                    $status = self::DUPLICATE_TRANSACTION;
                     break;
                 case '481':
                 case '483':
-                    $status = Response::DECLINED;
+                    $status = self::DECLINED;
                     break;
                 case '485':
-                    $status = Response::NOT_AUTHORIZED;
+                    $status = self::NOT_AUTHORIZED;
                     break;
                 case '486':
                 case '487':
                 case '489':
                 case '490':
-                    $status = Response::CVD;
+                    $status = self::CVD;
                     break;
                 default:
-                    $status = Response::ERROR;
+                    $status = self::ERROR;
             }
         }
 
@@ -262,9 +262,9 @@ class Response
         $status = null;
 
         if (preg_match('/invalid pan/i', $message)) {
-            $status = Response::INVALID_CARD;
+            $status = self::INVALID_CARD;
         } else if (preg_match('/invalid expiry date/i', $message)) {
-            $status = Response::INVALID_EXPIRY_DATE;
+            $status = self::INVALID_EXPIRY_DATE;
         }
 
         return $status;
