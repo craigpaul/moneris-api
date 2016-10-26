@@ -4,6 +4,8 @@ namespace CraigPaul\Moneris;
 
 class Receipt
 {
+    use Preparable;
+
     /**
      * @var array
      */
@@ -16,20 +18,7 @@ class Receipt
      */
     public function __construct($data)
     {
-        $this->data = $this->prepare($data);
-    }
-
-    /**
-     * Prepare the receipt data.
-     *
-     * @param $data
-     *
-     * @return array
-     */
-    protected function prepare($data)
-    {
-        $array = [];
-        $params = [
+        $this->data = $this->prepare($data, [
             ['property' => 'amount', 'key' => 'TransAmount', 'cast' => 'float'],
             ['property' => 'authorization', 'key' => 'AuthCode', 'cast' => 'string'],
             ['property' => 'avs_result', 'key' => 'AvsResultCode', 'cast' => 'string'],
@@ -47,42 +36,7 @@ class Receipt
             ['property' => 'time', 'key' => 'TransTime', 'cast' => 'string'],
             ['property' => 'transaction', 'key' => 'TransID', 'cast' => 'string'],
             ['property' => 'type', 'key' => 'TransType', 'cast' => 'string'],
-        ];
-
-        foreach ($params as $param) {
-            $key = $param['key'];
-            $property = $param['property'];
-
-            $array[$property] = isset($data->$key) && !is_null($data->$key) ? $data->$key : null;
-
-            if (isset($param['cast'])) {
-                switch ($param['cast']) {
-                    case 'boolean':
-                        $array[$property] = isset($array[$property]) ? $array[$property]->__toString() : null;
-                        $array[$property] = isset($array[$property]) && !is_null($array[$property]) ? ($array[$property] === 'true' ? true : false) : false;
-
-                        break;
-                    case 'float':
-                        $array[$property] = isset($array[$property]) ? floatval($array[$property]->__toString()) : null;
-
-                        break;
-                    case 'string':
-                        $array[$property] = isset($array[$property]) ? $array[$property]->__toString() : null;
-
-                        break;
-                    case 'array':
-                        $array[$property] = (array)$array[$property];
-                }
-            }
-
-            if (isset($param['callback'])) {
-                $callback = $param['callback'];
-
-                $array[$property] = $this->$callback($array[$property]);
-            }
-        }
-
-        return $array;
+        ]);
     }
 
     /**
