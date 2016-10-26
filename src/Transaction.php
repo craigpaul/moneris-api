@@ -161,7 +161,7 @@ class Transaction
         }
 
         if (isset($params['expiry_month']) && isset($params['expiry_year']) && !isset($params['expdate'])) {
-            $params['expdate'] = sprintf('%02%02d', $params['expiry_year'], $params['expiry_monthp']);
+            $params['expdate'] = sprintf('%02d%02d', $params['expiry_year'], $params['expiry_month']);
             unset($params['expiry_year'], $params['expiry_month']);
         }
 
