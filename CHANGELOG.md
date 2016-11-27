@@ -1,6 +1,17 @@
 #Moneris API Changelog
 
-###0.5.2 (2016-20-26)
+###0.6.0 (2016-11-27)
+
+####Changed
+
+- Updates readme [`735686c4d7`](https://github.com/craigpaul/moneris-api/commit/735686c4d7)
+ 
+####Added
+
+- Adds item attached to a purchase test [`b95b9fb382`](https://github.com/craigpaul/moneris-api/commit/b95b9fb382) 
+- Adds ability to attach items to a purchase [`9fdb5ca317`](https://github.com/craigpaul/moneris-api/commit/9fdb5ca317)
+
+###0.5.2 (2016-10-26)
 
 ####Changed
 
@@ -17,7 +28,7 @@
 - Adds docblock entry for transaction [`efed307cd7`](https://github.com/craigpaul/moneris-api/commit/efed307cd7)   
 - Adds an expiring card stub [`d6c3cabb06`](https://github.com/craigpaul/moneris-api/commit/d6c3cabb06) 
 
-###0.5.1 (2016-20-25)
+###0.5.1 (2016-10-25)
 
 ####Changed
  
@@ -30,7 +41,7 @@
 - Add some extra handling for invalid cc / exp date where moneris doesnt return a status code. [`63bcbad7ef`](https://github.com/craigpaul/moneris-api/commit/63bcbad7ef)
 - Add unit test for expdate conversion [`4c99e6f1ed`](https://github.com/craigpaul/moneris-api/commit/4c99e6f1ed)
 
-###0.5.0 (2016-20-25)
+###0.5.0 (2016-10-25)
 
 ####Changed
 
@@ -52,13 +63,13 @@
 - Adds missing customer information to add and update methods [`db07e976c8`](https://github.com/craigpaul/moneris-api/commit/db07e976c8)  
 - Adds string check to account for SimpleXMLElements being passed through [`43f3c92070`](https://github.com/craigpaul/moneris-api/commit/43f3c92070)
 
-###0.4.1 (2016-20-25)
+###0.4.1 (2016-10-25)
 
 ####Changed
 
 - Updates validation to provide title, field and code in errors for localization purposes [`e9888b9633`](https://github.com/craigpaul/moneris-api/commit/e9888b9633) 
 
-###0.4.0 (2016-20-25)
+###0.4.0 (2016-10-25)
 
 ####Added
 
