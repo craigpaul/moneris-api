@@ -186,9 +186,9 @@ $params = [
 $response = $gateway->verify($params); // could be purchase, preauth, etc.
 ```
 
-> Note: When making an AVS or CVD secured transaction, even if AVS or CVD fails, you will still have to void the transaction. There are two easy ways around this (DAMN MONERIS!).
+> Note: When making an AVS or CVD secured transaction, even if AVS or CVD fails, you will still have to void the transaction (DAMN MONERIS!). There are two easy ways around this.
 
-Verify the card first.
+Verify the card first. Using this method, there is one additional caveat (let me repeat it again...DAMN MONERIS!). Your verification transaction and purchase transaction must have different `order_id` parameters. One such solution could be to prepend an specific prefix to the front of verification order ids.
 
 ```php
 $response = $gateway->verify($params);
@@ -207,7 +207,7 @@ if ($response->successful && !$response->failedAvs && !$response->failedCvd) {
 Void the transaction.
 
 ```php
-  $response = $gateway->purchase($params);
+$response = $gateway->purchase($params);
 
 if ($response->successful && ($response->failedAvs || $response->failedCvd)) {
     $errors = $response->errors;
