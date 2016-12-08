@@ -186,6 +186,39 @@ $params = [
 $response = $gateway->verify($params); // could be purchase, preauth, etc.
 ```
 
+> Note: When making an AVS or CVD secured transaction, even if AVS or CVD fails, you will still have to void the transaction. There are two easy ways around this (DAMN MONERIS!).
+
+Verify the card first.
+
+```php
+$response = $gateway->verify($params);
+
+if ($response->successful && !$response->failedAvs && !$response->failedCvd) {
+    $response = $gateway->purchase($params);
+    
+    if ($response->successful) {
+        $receipt = $response->receipt();
+    } else {
+        $errors = $response->errors;
+    }
+}
+```
+
+Void the transaction.
+
+```php
+  $response = $gateway->purchase($params);
+
+if ($response->successful && ($response->failedAvs || $response->failedCvd)) {
+    $errors = $response->errors;
+    $response = $gateway->void($response->transaction);
+} elseif (!$response->successful) {
+    $errors = $response->errors;
+} else {
+    $receipt = $response->receipt();
+}
+```
+
 ## Vault
 
 The Moneris Vault allows you create and maintain credit card profiles on the Moneris servers instead of your own. To access the Vault, you will need to have your instantiated Gateway ([see above](#instantiation)).
