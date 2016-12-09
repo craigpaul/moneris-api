@@ -4,6 +4,8 @@ namespace CraigPaul\Moneris;
 
 class Receipt
 {
+    use Preparable;
+
     /**
      * @var array
      */
@@ -16,21 +18,8 @@ class Receipt
      */
     public function __construct($data)
     {
-        $this->data = $this->prepare($data);
-    }
-
-    /**
-     * Prepare the receipt data.
-     *
-     * @param $data
-     *
-     * @return array
-     */
-    protected function prepare($data)
-    {
-        $array = [];
-        $params = [
-            ['property' => 'amount', 'key' => 'TransAmount', 'cast' => 'float'],
+        $this->data = $this->prepare($data, [
+            ['property' => 'amount', 'key' => 'TransAmount', 'cast' => 'string'],
             ['property' => 'authorization', 'key' => 'AuthCode', 'cast' => 'string'],
             ['property' => 'avs_result', 'key' => 'AvsResultCode', 'cast' => 'string'],
             ['property' => 'card', 'key' => 'CardType', 'cast' => 'string'],
@@ -47,42 +36,7 @@ class Receipt
             ['property' => 'time', 'key' => 'TransTime', 'cast' => 'string'],
             ['property' => 'transaction', 'key' => 'TransID', 'cast' => 'string'],
             ['property' => 'type', 'key' => 'TransType', 'cast' => 'string'],
-        ];
-
-        foreach ($params as $param) {
-            $key = $param['key'];
-            $property = $param['property'];
-
-            $array[$property] = isset($data->$key) && !is_null($data->$key) ? $data->$key : null;
-
-            if (isset($param['cast'])) {
-                switch ($param['cast']) {
-                    case 'boolean':
-                        $array[$property] = isset($array[$property]) ? $array[$property]->__toString() : null;
-                        $array[$property] = isset($array[$property]) && !is_null($array[$property]) ? ($array[$property] === 'true' ? true : false) : false;
-
-                        break;
-                    case 'float':
-                        $array[$property] = isset($array[$property]) ? floatval($array[$property]->__toString()) : null;
-
-                        break;
-                    case 'string':
-                        $array[$property] = isset($array[$property]) ? $array[$property]->__toString() : null;
-
-                        break;
-                    case 'array':
-                        $array[$property] = (array)$array[$property];
-                }
-            }
-
-            if (isset($param['callback'])) {
-                $callback = $param['callback'];
-
-                $array[$property] = $this->$callback($array[$property]);
-            }
-        }
-
-        return $array;
+        ]);
     }
 
     /**
@@ -111,10 +65,10 @@ class Receipt
     private function setData(array $data)
     {
         return [
-            'customer_id' => isset($data['cust_id']) ? (is_string($data['cust_id']) ? $data['cust_id'] : $data['cust_id']->__toString()) : '',
-            'phone' => isset($data['phone']) ? $data['phone']->__toString() : '',
-            'email' => isset($data['email']) ? $data['email']->__toString() : '',
-            'note' => isset($data['note']) ? $data['note']->__toString() : '',
+            'customer_id' => isset($data['cust_id']) ? (is_string($data['cust_id']) ? $data['cust_id'] : $data['cust_id']->__toString()) : null,
+            'phone' => isset($data['phone']) ? (is_string($data['phone']) ? $data['phone'] : $data['phone']->__toString()) : null,
+            'email' => isset($data['email']) ? (is_string($data['email']) ? $data['email'] : $data['email']->__toString()) : null,
+            'note' => isset($data['note']) ? (is_string($data['note']) ? $data['note'] : $data['note']->__toString()) : null,
             'crypt' => isset($data['crypt_type']) ? intval($data['crypt_type']) : null,
             'masked_pan' => isset($data['masked_pan']) ? $data['masked_pan'] : null,
             'pan' => isset($data['pan']) ? $data['pan'] : null,

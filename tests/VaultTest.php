@@ -1,15 +1,38 @@
 <?php
 
-use CraigPaul\Moneris\Moneris;
+use Faker\Factory as Faker;
 use CraigPaul\Moneris\Vault;
+use CraigPaul\Moneris\Moneris;
+use CraigPaul\Moneris\Customer;
+use CraigPaul\Moneris\Processor;
 use CraigPaul\Moneris\CreditCard;
+use CraigPaul\Moneris\Transaction;
 
 class VaultTest extends TestCase
 {
     /**
+     * The billing / shipping info for customer info requests.
+     *
+     * @var array
+     */
+    protected $billing;
+
+    /**
      * @var \CraigPaul\Moneris\CreditCard
      */
     protected $card;
+
+    /**
+     * The customer info for customer info requests.
+     *
+     * @var array
+     */
+    protected $customer;
+
+    /**
+     * @var array
+     */
+    protected $items;
 
     /**
      * @var array
@@ -30,12 +53,50 @@ class VaultTest extends TestCase
     {
         parent::setUp();
 
+        $faker = Faker::create();
         $this->card = CreditCard::create($this->visa, '2012');
         $this->params = [
             'order_id' => uniqid('1234-567890', true),
             'amount' => '1.00',
         ];
         $this->vault = Vault::create($this->id, $this->token, $this->environment);
+        $this->billing = [
+            'first_name' => $faker->firstName,
+            'last_name' => $faker->lastName,
+            'company_name' => $faker->company,
+            'address' => $faker->streetAddress,
+            'city' => $faker->city,
+            'province' => 'SK',
+            'postal_code' => 'X0X0X0',
+            'country' => 'Canada',
+            'phone_number' => '555-555-5555',
+            'fax' => '555-555-5555',
+            'tax1' => '1.01',
+            'tax2' => '1.02',
+            'tax3' => '1.03',
+            'shipping_cost' => '9.99',
+        ];
+        $this->items = [
+            [
+                'name' => $faker->sentence(mt_rand(3, 6)),
+                'quantity' => '1',
+                'product_code' => $faker->isbn10,
+                'extended_amount' => $faker->randomFloat(2, 0.01, 999.99),
+            ],
+            [
+                'name' => $faker->sentence(mt_rand(3, 6)),
+                'quantity' => '1',
+                'product_code' => $faker->isbn10,
+                'extended_amount' => $faker->randomFloat(2, 0.01, 999.99),
+            ]
+        ];
+        $this->customer = [
+            'email' => 'example@email.com',
+            'instructions' => $faker->sentence(mt_rand(3, 6)),
+            'billing' => $this->billing,
+            'shipping' => $this->billing,
+            'items' => $this->items,
+        ];
     }
 
     /** @test */
@@ -71,6 +132,29 @@ class VaultTest extends TestCase
     }
 
     /** @test */
+    public function it_can_add_a_credit_card_with_an_attached_customer_to_the_moneris_vault_and_returns_a_data_key_for_storage()
+    {
+        $params = [
+            'id' => uniqid('customer-', true),
+            'email' => 'example@email.com',
+            'phone' => '555-555-5555',
+            'note' => 'Customer note',
+        ];
+        $customer = Customer::create($params);
+        $card = $this->card->attach($customer);
+
+        $response = $this->vault->add($card);
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertNotNull($receipt->read('key'));
+        $this->assertEquals($params['id'], $receipt->read('data')['customer_id']);
+        $this->assertEquals($params['phone'], $receipt->read('data')['phone']);
+        $this->assertEquals($params['email'], $receipt->read('data')['email']);
+        $this->assertEquals($params['note'], $receipt->read('data')['note']);
+    }
+
+    /** @test */
     public function it_can_update_a_credit_card_in_the_moneris_vault_and_returns_a_data_key_for_storage()
     {
         $response = $this->vault->add($this->card);
@@ -87,6 +171,32 @@ class VaultTest extends TestCase
         $this->assertNotNull($receipt->read('key'));
         $this->assertEquals($key, $receipt->read('key'));
         $this->assertEquals('2112', $response->transaction->params['expdate']);
+    }
+
+    /** @test */
+    public function it_can_update_a_credit_card_with_an_attached_customer_to_the_moneris_vault_and_returns_a_data_key_for_storage()
+    {
+        $params = [
+            'id' => uniqid('customer-', true),
+            'email' => 'example@email.com',
+            'phone' => '555-555-5555',
+            'note' => 'Customer note',
+        ];
+        $customer = Customer::create($params);
+        $card = $this->card->attach($customer);
+
+        $response = $this->vault->add($card);
+        $key = $response->receipt()->read('key');
+
+        $this->card->customer->email = 'example2@email.com';
+
+        $response = $this->vault->update($key, $this->card);
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertNotNull($receipt->read('key'));
+        $this->assertEquals($key, $receipt->read('key'));
+        $this->assertEquals('example2@email.com', $receipt->read('data')['email']);
     }
 
     /** @test */
@@ -161,19 +271,36 @@ class VaultTest extends TestCase
     public function it_can_retrieve_all_expiring_credit_cards_from_the_moneris_vault()
     {
         $expiry = date('ym', strtotime('today + 10 days'));
+        $cards = [];
 
         $card = CreditCard::create($this->visa, $expiry);
-        $this->vault->add($card);
+        $cards[] = $this->vault->add($card);
         $card = CreditCard::create($this->mastercard, $expiry);
-        $this->vault->add($card);
+        $cards[] = $this->vault->add($card);
         $card = CreditCard::create($this->amex, $expiry);
-        $this->vault->add($card);
+        $cards[] = $this->vault->add($card);
 
-        $response = $this->vault->expiring();
+        $client = mock_handler((new VaultExpiringStub())->render($cards));
+
+        $params = ['type' => 'res_get_expiring'];
+        $transaction = new Transaction($this->vault, $params);
+        $this->vault->transaction = $transaction;
+        $processor = new Processor($client);
+
+        $response = $processor->process($transaction);
         $receipt = $response->receipt();
 
         $this->assertTrue($response->successful);
         $this->assertGreaterThan(0, count($receipt->read('data')));
+
+        /** @var \CraigPaul\Moneris\Response $card */
+        foreach ($cards as $index => $card) {
+            /** @var \CraigPaul\Moneris\Receipt $rec */
+            $rec = $card->receipt();
+
+            $this->assertEquals($rec->read('key'), $receipt->read('data')[$index]['data_key']);
+            $this->assertEquals($rec->read('data')['masked_pan'], $receipt->read('data')[$index]['masked_pan']);
+        }
     }
 
     /** @test */
@@ -184,6 +311,26 @@ class VaultTest extends TestCase
 
         $params = array_merge($this->params, [
             'data_key' => $key,
+        ]);
+
+        $response = $this->vault->purchase($params);
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertEquals($key, $receipt->read('key'));
+        $this->assertEquals(true, $receipt->read('complete'));
+    }
+
+    /** @test */
+    public function it_can_make_a_purchase_with_a_credit_card_stored_in_the_moneris_vault_and_attach_customer_info()
+    {
+        $response = $this->vault->add($this->card);
+        $key = $response->receipt()->read('key');
+
+        $params = array_merge($this->params, [
+            'data_key' => $key,
+            'cust_id' => uniqid('customer-', true),
+            'cust_info' => $this->customer,
         ]);
 
         $response = $this->vault->purchase($params);
@@ -248,6 +395,26 @@ class VaultTest extends TestCase
 
         $params = array_merge($this->params, [
             'data_key' => $key,
+        ]);
+
+        $response = $this->vault->preauth($params);
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertEquals($key, $receipt->read('key'));
+        $this->assertEquals(true, $receipt->read('complete'));
+    }
+
+    /** @test */
+    public function it_can_pre_authorize_a_credit_card_stored_in_the_moneris_vault_and_attach_customer_info()
+    {
+        $response = $this->vault->add($this->card);
+        $key = $response->receipt()->read('key');
+
+        $params = array_merge($this->params, [
+            'data_key' => $key,
+            'cust_id' => uniqid('customer-', true),
+            'cust_info' => $this->customer,
         ]);
 
         $response = $this->vault->preauth($params);

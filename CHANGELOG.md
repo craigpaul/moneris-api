@@ -1,12 +1,75 @@
 #Moneris API Changelog
 
-###0.4.1 (2016-20-25)
+###0.6.0 (2016-11-27)
+
+####Changed
+
+- Updates readme [`735686c4d7`](https://github.com/craigpaul/moneris-api/commit/735686c4d7)
+ 
+####Added
+
+- Adds item attached to a purchase test [`b95b9fb382`](https://github.com/craigpaul/moneris-api/commit/b95b9fb382) 
+- Adds ability to attach items to a purchase [`9fdb5ca317`](https://github.com/craigpaul/moneris-api/commit/9fdb5ca317)
+
+###0.5.2 (2016-10-26)
+
+####Changed
+
+- Renames mocks to stubs [`78014491e2`](https://github.com/craigpaul/moneris-api/commit/78014491e2)
+- Renames Stubs to mocks [`f6ce06e709`](https://github.com/craigpaul/moneris-api/commit/f6ce06e709)
+- Updates expiring test to have a mocked response to overcome Moneris Api limits [`d3a813df34`](https://github.com/craigpaul/moneris-api/commit/d3a813df34)
+- Removes old gitkeep files [`4d5a293a26`](https://github.com/craigpaul/moneris-api/commit/4d5a293a26)
+- Autoloads stubs in development [`3db6228eda`](https://github.com/craigpaul/moneris-api/commit/3db6228eda)
+
+####Added
+   
+- Adds mock handler helper function [`ac85c82adf`](https://github.com/craigpaul/moneris-api/commit/ac85c82adf) 
+- Adds logic to get all ResolveData keys when more then one exists in the response [`c2393778da`](https://github.com/craigpaul/moneris-api/commit/c2393778da) 
+- Adds docblock entry for transaction [`efed307cd7`](https://github.com/craigpaul/moneris-api/commit/efed307cd7)   
+- Adds an expiring card stub [`d6c3cabb06`](https://github.com/craigpaul/moneris-api/commit/d6c3cabb06) 
+
+###0.5.1 (2016-10-25)
+
+####Changed
+ 
+- Response:: => self:: [`61192d0b5e`](https://github.com/craigpaul/moneris-api/commit/61192d0b5e)  
+- Fix test + sprintf formatting [`a88c97b7dc`](https://github.com/craigpaul/moneris-api/commit/a88c97b7dc)  
+- Fix typo with expdate. [`aaf3f8dfd7`](https://github.com/craigpaul/moneris-api/commit/aaf3f8dfd7) 
+
+####Added
+
+- Add some extra handling for invalid cc / exp date where moneris doesnt return a status code. [`63bcbad7ef`](https://github.com/craigpaul/moneris-api/commit/63bcbad7ef)
+- Add unit test for expdate conversion [`4c99e6f1ed`](https://github.com/craigpaul/moneris-api/commit/4c99e6f1ed)
+
+###0.5.0 (2016-10-25)
+
+####Changed
+
+- Changes amount cast to string [`57b0a212e0`](https://github.com/craigpaul/moneris-api/commit/57b0a212e0)
+- Updates customer tests to match new preparable setting [`6fa73e5961`](https://github.com/craigpaul/moneris-api/commit/6fa73e5961)
+- Adjusts customer to use preparable instead of direct setting [`85ba6e9f66`](https://github.com/craigpaul/moneris-api/commit/85ba6e9f66)
+- Extracts prepare method to preparable trait [`66deaddfd6`](https://github.com/craigpaul/moneris-api/commit/66deaddfd6)
+- Extracts param appender and accounts for recursion [`57f71419e2`](https://github.com/craigpaul/moneris-api/commit/57f71419e2)
+
+####Added
+
+- Adds proper setter for customer data [`9da220ec66`](https://github.com/craigpaul/moneris-api/commit/9da220ec66) 
+- Adds purchase with customer info tests [`fbff9e7f0d`](https://github.com/craigpaul/moneris-api/commit/fbff9e7f0d) 
+- Adds vault customer info pre authorization test [`01846f8956`](https://github.com/craigpaul/moneris-api/commit/01846f8956) 
+- Adds pre authorization test that includes customer info [`ca72ea6630`](https://github.com/craigpaul/moneris-api/commit/ca72ea6630)  
+- Adds faker for tests [`ccea71a15d`](https://github.com/craigpaul/moneris-api/commit/ccea71a15d)   
+- Adds extra normalization steps to prepare [`942b8d0b49`](https://github.com/craigpaul/moneris-api/commit/942b8d0b49)  
+- Adds customer attaching tests to vault credit card methods [`eb01acfc2c`](https://github.com/craigpaul/moneris-api/commit/eb01acfc2c) 
+- Adds missing customer information to add and update methods [`db07e976c8`](https://github.com/craigpaul/moneris-api/commit/db07e976c8)  
+- Adds string check to account for SimpleXMLElements being passed through [`43f3c92070`](https://github.com/craigpaul/moneris-api/commit/43f3c92070)
+
+###0.4.1 (2016-10-25)
 
 ####Changed
 
 - Updates validation to provide title, field and code in errors for localization purposes [`e9888b9633`](https://github.com/craigpaul/moneris-api/commit/e9888b9633) 
 
-###0.4.0 (2016-20-25)
+###0.4.0 (2016-10-25)
 
 ####Added
 

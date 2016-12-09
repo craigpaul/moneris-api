@@ -73,6 +73,37 @@ class Transaction
     }
 
     /**
+     * Append elements to the XML response.
+     *
+     * @param array $params
+     * @param \SimpleXMLElement $type
+     *
+     * @return void
+     */
+    protected function append(array $params, SimpleXMLElement $type)
+    {
+        foreach ($params as $key => $value) {
+            if (is_array($value)) {
+                if ($key === 'items') {
+                    foreach ($value as $item) {
+                        $parent = $type->addChild('item');
+                        $parent->addChild('name', isset($item['name']) ? $item['name'] : '');
+                        $parent->addChild('quantity', isset($item['quantity']) ? $item['quantity'] : '');
+                        $parent->addChild('product_code', isset($item['product_code']) ? $item['product_code'] : '');
+                        $parent->addChild('extended_amount', isset($item['extended_amount']) ? $item['extended_amount'] : '');
+                    }
+                } else {
+                    $parent = $type->addChild($key);
+
+                    $this->append($value, $parent);
+                }
+            } else {
+                $type->addChild($key, $value);
+            }
+        }
+    }
+
+    /**
      * Check that the required parameters have not been provided to the transaction.
      *
      * @return bool
@@ -198,9 +229,7 @@ class Transaction
             }
         }
 
-        foreach ($params as $key => $value) {
-            $type->addChild($key, $value);
-        }
+        $this->append($params, $type);
 
         return $xml->asXML();
     }

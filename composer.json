@@ -17,7 +17,8 @@
         "phpunit/phpunit": "~5.0",
         "mockery/mockery": "~0.9",
         "phpunit/php-code-coverage": "^4.0",
-        "symfony/var-dumper": "^3.1"
+        "symfony/var-dumper": "^3.1",
+        "fzaninotto/faker": "^1.6"
     },
     "autoload": {
         "psr-4": {
@@ -26,6 +27,7 @@
     },
     "autoload-dev": {
         "classmap": [
+            "tests/stubs/",
             "tests/TestCase.php"
         ],
         "files": [
