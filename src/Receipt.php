@@ -39,6 +39,14 @@ class Receipt
         ]);
     }
 
+    public function successful() {
+        $complete = $this->read('complete');
+        $valid_code = $this->read('code') !== 'null';
+        $code = (int)$this->read('code');
+
+        return $complete && $valid_code && $code >= 0 && $code < 50;
+    }
+
     /**
      * Read an item from the receipt.
      *
