@@ -469,7 +469,7 @@ class Transaction
             ];
         }
 
-        $errors = array_filter($errors);
+        $errors = array_values(array_filter($errors));
         $this->errors = $errors;
 
         return empty($errors);
