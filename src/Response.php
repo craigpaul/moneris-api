@@ -140,12 +140,10 @@ class Response
             return $this;
         }
 
-        $code = (int)$receipt->read('code');
+        $this->successful = $receipt->successful();
 
-        if ($code >= 50 || $code === 0) {
+        if (!$this->successful) {
             $this->status = $this->convertReceiptCodeToStatus($receipt);
-            $this->successful = false;
-
             return $this;
         }
 
@@ -176,22 +174,18 @@ class Response
             }
 
             $this->failedAvs = true;
-            $this->successful = false;
 
             return $this;
         }
 
         $code = !is_null($receipt->read('cvd_result')) ? $receipt->read('cvd_result') : null;
 
-        if ($gateway->avs && !is_null($code) && $code !== 'null' && !in_array($code{1}, $gateway->cvdCodes)) {
+        if ($gateway->cvd && !is_null($code) && $code !== 'null' && !in_array($code{1}, $gateway->cvdCodes)) {
             $this->status = self::CVD;
             $this->failedCvd = true;
-            $this->successful = false;
 
             return $this;
         }
-
-        $this->successful = true;
 
         return $this;
     }
