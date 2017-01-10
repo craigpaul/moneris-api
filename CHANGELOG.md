@@ -1,5 +1,11 @@
 #Moneris API Changelog
 
+###0.6.3 (2017-01-09)
+
+####Changed
+
+- Adds code style fixer. Updates code style. Updates md files [`1eda9ca3a6`](https://github.com/craigpaul/moneris-api/commit/1eda9ca3a6) 
+
 ###0.6.2 (2017-01-09)
 
 ####Changed
