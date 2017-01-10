@@ -251,6 +251,53 @@ class Transaction
                 case 'res_get_expiring':
                     break;
                 case 'card_verification':
+                    $errors[] = isset($params['order_id']) ? null : [
+                        'field' => 'order_id',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['pan']) ? null : [
+                        'field' => 'credit_card',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    $errors[] = isset($params['expdate']) ? null : [
+                        'field' => 'expdate',
+                        'code' => self::PARAMETER_NOT_SET,
+                        'title' => 'not_set'
+                    ];
+
+                    if ($this->gateway->avs) {
+                        $errors[] = isset($params['avs_street_number']) ? null : [
+                            'field' => 'avs_street_number',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+
+                        $errors[] = isset($params['avs_street_name']) ? null : [
+                            'field' => 'avs_street_name',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+
+                        $errors[] = isset($params['avs_zipcode']) ? null : [
+                            'field' => 'avs_zipcode',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+                    }
+
+                    if ($this->gateway->cvd) {
+                        $errors[] = isset($params['cvd']) ? null : [
+                            'field' => 'cvd',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+                    }
+
+                    break;
                 case 'preauth':
                 case 'purchase':
                     $errors[] = isset($params['order_id']) ? null : [
