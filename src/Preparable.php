@@ -22,7 +22,7 @@ trait Preparable
             if ($key === 'ResolveData' && count($data->xpath('//ResolveData')) > 1) {
                 $resolves = $data->xpath('//ResolveData');
 
-                foreach($resolves as $index => $resolve) {
+                foreach ($resolves as $index => $resolve) {
                     $resolves[$index] = array_map('strval', (array)$resolve);
                 }
 

@@ -1,5 +1,25 @@
 #Moneris API Changelog
 
+###0.6.2 (2017-01-09)
+
+####Changed
+
+- Updates card_verification validation to not require amount [`714b1624ce`](https://github.com/craigpaul/moneris-api/commit/714b1624ce) 
+
+###0.6.1 (2016-12-28)
+
+####Changed
+
+- Merge pull request #4 from tappleby/bugfix-payment-success [`cb3b75ed84`](https://github.com/craigpaul/moneris-api/commit/cb3b75ed84) 
+- Updates transaction to reset errors array indices [`262617c3ac`](https://github.com/craigpaul/moneris-api/commit/262617c3ac) 
+- Update successful payment logic, AVS + CVD can fail but the transaction will still be successful. [`bbd85b8063`](https://github.com/craigpaul/moneris-api/commit/bbd85b8063) 
+- Merge remote-tracking branch 'upstream/master' [`0f4f6597a6`](https://github.com/craigpaul/moneris-api/commit/0f4f6597a6)
+
+####Added
+
+- Adds another caveat to docs [`14525afdce`](https://github.com/craigpaul/moneris-api/commit/14525afdce) 
+- Adds caveat example to readme [`7c35112183`](https://github.com/craigpaul/moneris-api/commit/7c35112183) 
+
 ###0.6.0 (2016-11-27)
 
 ####Changed

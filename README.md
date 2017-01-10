@@ -1,6 +1,9 @@
 # Moneris API
 
-[![Build Status](https://travis-ci.org/craigpaul/moneris-api.svg?branch=master)](https://travis-ci.org/craigpaul/moneris-api)
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Software License][ico-license]](LICENSE.md)
+[![Build Status][ico-travis]][link-travis]
+[![Total Downloads][ico-downloads]][link-downloads]
  
 ## Requirements
 
@@ -523,6 +526,30 @@ transaction - The Moneris id of the transaction. (string)
 type - The transaction type. (string)
 ```
 
+## Change log
+
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
+## Credits
+
+- [Craig Paul][link-author]
+- [All Contributors][link-contributors]
+
 ## License
 
 Moneris API is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+[ico-version]: https://img.shields.io/packagist/v/craigpaul/moneris-api.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/craigpaul/moneris-api/master.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/craigpaul/moneris-api.svg?style=flat-square
+
+[link-packagist]: https://packagist.org/packages/craigpaul/moneris-api
+[link-travis]: https://travis-ci.org/craigpaul/moneris-api
+[link-downloads]: https://packagist.org/packages/craigpaul/moneris-api
+[link-author]: https://github.com/craigpaul
+[link-contributors]: ../../contributors

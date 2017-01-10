@@ -190,7 +190,8 @@ class Response
         return $this;
     }
 
-    protected function convertReceiptCodeToStatus(Receipt $receipt) {
+    protected function convertReceiptCodeToStatus(Receipt $receipt)
+    {
         $code = $receipt->read('code');
 
         if ($code === 'null' && $message_status = $this->convertReceiptMessageToStatus($receipt)) {
@@ -251,13 +252,14 @@ class Response
         return $status;
     }
 
-    protected function convertReceiptMessageToStatus(Receipt $receipt) {
+    protected function convertReceiptMessageToStatus(Receipt $receipt)
+    {
         $message = (string)$receipt->read('message');
         $status = null;
 
         if (preg_match('/invalid pan/i', $message)) {
             $status = self::INVALID_CARD;
-        } else if (preg_match('/invalid expiry date/i', $message)) {
+        } elseif (preg_match('/invalid expiry date/i', $message)) {
             $status = self::INVALID_EXPIRY_DATE;
         }
 

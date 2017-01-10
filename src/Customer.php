@@ -85,7 +85,7 @@ class Customer
     {
         if (property_exists($this, $property)) {
             $this->$property = $value;
-        } else if (!is_null($this->data)) {
+        } elseif (!is_null($this->data)) {
             $this->data[$property] = $value;
         } else {
             throw new \InvalidArgumentException('['.get_class($this).'] does not contain a property named ['.$property.']');

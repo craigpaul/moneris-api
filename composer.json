@@ -18,7 +18,8 @@
         "mockery/mockery": "~0.9",
         "phpunit/php-code-coverage": "^4.0",
         "symfony/var-dumper": "^3.1",
-        "fzaninotto/faker": "^1.6"
+        "fzaninotto/faker": "^1.6",
+        "squizlabs/php_codesniffer": "^2.7"
     },
     "autoload": {
         "psr-4": {
@@ -34,6 +35,14 @@
             "tests/helpers.php"
         ]
     },
+    "scripts": {
+        "test": "phpunit",
+        "check-style": "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src",
+        "fix-style": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src"
+    },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    }
 }

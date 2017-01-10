@@ -39,7 +39,8 @@ class Receipt
         ]);
     }
 
-    public function successful() {
+    public function successful()
+    {
         $complete = $this->read('complete');
         $valid_code = $this->read('code') !== 'null';
         $code = (int)$this->read('code');
