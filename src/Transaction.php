@@ -203,7 +203,6 @@ class Transaction
                 'card_verification',
                 'cavv_purchase',
                 'cavv_preauth',
-                'res_purchase_cc',
                 'res_preauth_cc'
             ]
         );
@@ -487,14 +486,6 @@ class Transaction
 
                         $errors[] = isset($params['avs_zipcode']) ? null : [
                             'field' => 'avs_zipcode',
-                            'code' => self::PARAMETER_NOT_SET,
-                            'title' => 'not_set'
-                        ];
-                    }
-
-                    if ($this->gateway->cvd) {
-                        $errors[] = isset($params['cvd']) ? null : [
-                            'field' => 'cvd',
                             'code' => self::PARAMETER_NOT_SET,
                             'title' => 'not_set'
                         ];
