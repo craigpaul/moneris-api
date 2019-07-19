@@ -1,5 +1,11 @@
 #Moneris API Changelog
 
+###0.7.0 (2019-07-19)
+
+####Changed
+
+- Removes support for full card lookup as Moneris recommends against using this feature since it can cause PCI compliance headaches [`e2d0c14974`](https://github.com/craigpaul/moneris-api/commit/e2d0c14974)
+
 ###0.6.3 (2017-01-09)
 
 ####Changed
