@@ -252,22 +252,6 @@ class VaultTest extends TestCase
     }
 
     /** @test */
-    public function it_can_peek_into_the_vault_and_retrieve_a_full_credit_card_from_the_moneris_vault_with_a_valid_data_key()
-    {
-        $response = $this->vault->add($this->card);
-        $key = $response->receipt()->read('key');
-
-        $response = $this->vault->peek($key, true);
-        $receipt = $response->receipt();
-
-        $this->assertTrue($response->successful);
-        $this->assertNotNull($receipt->read('key'));
-        $this->assertEquals('12', $receipt->read('data')['expiry_date']['month']);
-        $this->assertEquals('20', $receipt->read('data')['expiry_date']['year']);
-        $this->assertEquals($this->visa, $receipt->read('data')['pan']);
-    }
-
-    /** @test */
     public function it_can_retrieve_all_expiring_credit_cards_from_the_moneris_vault()
     {
         $expiry = date('ym', strtotime('today + 10 days'));

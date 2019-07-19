@@ -109,14 +109,13 @@ class Vault extends Gateway
      * profile associated with a given data key.
      *
      * @param string $key
-     * @param bool $full
      *
      * @return \CraigPaul\Moneris\Response
      */
-    public function peek($key = '', $full = false)
+    public function peek($key = '')
     {
         $params = [
-            'type' => $full ? 'res_lookup_full' : 'res_lookup_masked',
+            'type' => 'res_lookup_masked',
             'data_key' => $key,
         ];
 

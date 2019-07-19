@@ -341,7 +341,7 @@ $response = $vault->tokenize($response->transaction);
 
 ### Peek Into The Vault
 
-If you have the need to look up the masked credit card number, or perhaps the full credit card number, you can peek into the Vault.
+If you have the need to look up the masked credit card number you can peek into the Vault.
 
 ```php
 $card = CreditCard::create('4242424242424242', '2012');
@@ -353,8 +353,6 @@ $response = $vault->peek($key);
 $receipt = $response->receipt();
 
 $masked = $receipt->read('data')['masked_pan'];
-
-$full = $receipt->read('data')['pan'];
 ```
 
 ### Retrieve Expiring Cards
