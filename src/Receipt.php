@@ -36,6 +36,7 @@ class Receipt
             ['property' => 'time', 'key' => 'TransTime', 'cast' => 'string'],
             ['property' => 'transaction', 'key' => 'TransID', 'cast' => 'string'],
             ['property' => 'type', 'key' => 'TransType', 'cast' => 'string'],
+            ['property' => 'issuer_id', 'key' => 'IssuerId', 'cast' => 'string'],
         ]);
     }
 

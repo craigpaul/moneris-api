@@ -472,4 +472,41 @@ class VaultTest extends TestCase
         $this->assertTrue($response->successful);
         $this->assertEquals(true, $receipt->read('complete'));
     }
+
+    /** @test */
+    public function it_can_make_a_purchase_for_a_credit_card_stored_in_the_moneris_vault_using_credential_on_file()
+    {
+        $params = ['environment' => Moneris::ENV_TESTING, 'cof' => true];
+        $gateway = Moneris::create($this->id, $this->token, $params);
+        $vault = $gateway->cards();
+
+        $preauth_params = [
+            'order_id' => uniqid('1234-56789', true),
+            'amount' => '1.00',
+            'credit_card' => $this->visa,
+            'expdate' => '2012',
+            'payment_indicator' => 'C',
+            'payment_information' => '0'
+        ];
+
+        $response = $gateway->preauth($preauth_params);
+        $issuer_id = $response->receipt()->read('issuer_id');
+        $response = $vault->add($this->card, ['issuer_id' => $issuer_id]);
+        $key = $response->receipt()->read('key');
+
+        $params = array_merge($this->params, [
+            'data_key' => $key,
+            'payment_indicator' => 'U',
+            'payment_information' => '2',
+            'issuer_id' => $issuer_id
+        ]);
+
+        $response = $vault->purchase($params);
+        $receipt = $response->receipt();
+
+        $this->assertTrue($response->successful);
+        $this->assertEquals($key, $receipt->read('key'));
+        $this->assertEquals(true, $receipt->read('complete'));
+        $this->assertNotEmpty($receipt->read('issuer_id'));
+    }
 }

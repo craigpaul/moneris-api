@@ -207,6 +207,14 @@ class Transaction
                 'res_preauth_cc'
             ]
         );
+
+        $cc_action = in_array(
+            $params['type'],
+            [
+                'res_add_cc',
+                'res_update_cc'
+            ]
+        );
         unset($params['type']);
 
         if ($gateway->cvd && $efraud) {
@@ -227,6 +235,23 @@ class Transaction
                 $avs->addChild($key, $value);
                 unset($params[$key]);
             }
+        }
+
+        if ($gateway->cof && ($efraud || $cc_action)) {
+            $cofInfo = $type->addChild('cof_info');
+            if (!empty($params['payment_indicator'])) {
+                $cofInfo->addChild('payment_indicator', $params['payment_indicator']);
+            }
+
+            if (!empty($params['payment_information'])) {
+                $cofInfo->addChild('payment_information', $params['payment_information']);
+            }
+
+            if (!empty($params['issuer_id'])) {
+                $cofInfo->addChild('issuer_id', $params['issuer_id']);
+            }
+
+            unset($params['payment_indicator'], $params['payment_information'], $params['issuer_id']);
         }
 
         $this->append($params, $type);
@@ -297,6 +322,20 @@ class Transaction
                         ];
                     }
 
+                    if ($this->gateway->cof) {
+                        $errors[] = isset($params['payment_indicator']) ? null : [
+                            'field' => 'payment_indicator',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+
+                        $errors[] = isset($params['payment_information']) ? null : [
+                            'field' => 'payment_information',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+                    }
+
                     break;
                 case 'preauth':
                 case 'purchase':
@@ -347,6 +386,20 @@ class Transaction
                     if ($this->gateway->cvd) {
                         $errors[] = isset($params['cvd']) ? null : [
                             'field' => 'cvd',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+                    }
+
+                    if ($this->gateway->cof) {
+                        $errors[] = isset($params['payment_indicator']) ? null : [
+                            'field' => 'payment_indicator',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+
+                        $errors[] = isset($params['payment_information']) ? null : [
+                            'field' => 'payment_information',
                             'code' => self::PARAMETER_NOT_SET,
                             'title' => 'not_set'
                         ];
@@ -421,6 +474,14 @@ class Transaction
                         'title' => 'not_set'
                     ];
 
+                    if ($this->gateway->cof) {
+                        $errors[] = isset($params['issuer_id']) ? null : [
+                            'field' => 'issuer_id',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+                    }
+
                     break;
                 case 'res_update_cc':
                     $errors[] = isset($params['data_key']) ? null : [
@@ -440,6 +501,14 @@ class Transaction
                         'code' => self::PARAMETER_NOT_SET,
                         'title' => 'not_set'
                     ];
+
+                    if ($this->gateway->cof) {
+                        $errors[] = isset($params['issuer_id']) ? null : [
+                            'field' => 'issuer_id',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+                    }
 
                     break;
                 case 'res_delete':
@@ -495,6 +564,20 @@ class Transaction
                     if ($this->gateway->cvd) {
                         $errors[] = isset($params['cvd']) ? null : [
                             'field' => 'cvd',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+                    }
+
+                    if ($this->gateway->cof) {
+                        $errors[] = isset($params['payment_indicator']) ? null : [
+                            'field' => 'payment_indicator',
+                            'code' => self::PARAMETER_NOT_SET,
+                            'title' => 'not_set'
+                        ];
+
+                        $errors[] = isset($params['payment_information']) ? null : [
+                            'field' => 'payment_information',
                             'code' => self::PARAMETER_NOT_SET,
                             'title' => 'not_set'
                         ];
