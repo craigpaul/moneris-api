@@ -1,15 +1,29 @@
 language: php
 
-php:
-  - 5.6
-  - 7.0
-  - 7.1
+sudo: false
 
-before_script:
-  - composer self-update
-  - composer install --no-interaction
-
-script: phpunit
+cache:
+  directories:
+    - $HOME/.composer/cache
 
 matrix:
+  include:
+    - php: 5.6
+      env: PHPUNIT='5.7.*'
+    - php: 7.0
+      env: PHPUNIT='6.5.*'
+    - php: 7.1
+      env: PHPUNIT='7.5.*'
   fast_finish: true
+
+before_script:
+  - composer config discard-changes true
+
+before_install:
+  - travis_retry composer self-update
+  - travis_retry composer require "phpunit/phpunit:${PHPUNIT}" --no-interaction --no-update
+
+install:
+  - travis_retry composer install --prefer-dist --no-interaction --no-suggest
+
+script: phpunit
