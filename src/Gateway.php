@@ -15,6 +15,7 @@ use GuzzleHttp\Client;
  * @property-read string $id
  * @property-read string $token
  * @property \CraigPaul\Moneris\Transaction $transaction
+ * @property bool $cof
  */
 class Gateway
 {
@@ -71,6 +72,13 @@ class Gateway
      * @var \CraigPaul\Moneris\Transaction
      */
     protected $transaction;
+
+    /**
+     * Determine if we will use Credential On File.
+     *
+     * @var bool
+     */
+    protected $cof = false;
 
     /**
      * Create a new Moneris instance.
@@ -133,6 +141,10 @@ class Gateway
 
         if (isset($this->cvd)) {
             $vault->cvd = boolval($this->cvd);
+        }
+
+        if (isset($this->cof)) {
+            $vault->cof = boolval($this->cof);
         }
 
         return $vault;

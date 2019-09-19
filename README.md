@@ -34,6 +34,7 @@ $params = [
   'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE
   'avs' => true, // default: false
   'cvd' => true, // default: false
+  'cof' => true, // default: false
 ];
 
 $gateway = (new Moneris($id, $token, $params))->connect();
@@ -52,6 +53,7 @@ $params = [
   'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE
   'avs' => true, // default: false
   'cvd' => true, // default: false
+  'cof' => true, // default: false
 ];
 
 $gateway = Moneris::create($id, $token, $params);
@@ -220,6 +222,23 @@ if ($response->successful && ($response->failedAvs || $response->failedCvd)) {
 } else {
     $receipt = $response->receipt();
 }
+```
+
+### Credential On File
+
+The credential on file is part of the new Visa requirements to pass the CVD/CVV2 data for transactions. 
+
+```php
+$params = [
+    'order_id' => uniqid('1234-56789', true),
+    'amount' => '1.00',
+    'data_key' => $key,
+    'payment_indicator' => 'U',
+    'payment_information' => '2',
+    'issuer_id' => $issuer_id // this is optional
+];
+
+$response = $vault->purchase($params); // could be purchase, preauth, etc.
 ```
 
 ## Vault

@@ -96,6 +96,10 @@ class Moneris
             $gateway->cvd = boolval($this->params['cvd']);
         }
 
+        if (isset($this->params['cof'])) {
+            $gateway->cof = boolval($this->params['cof']);
+        }
+
         return $gateway;
     }
 }
