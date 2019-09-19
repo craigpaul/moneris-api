@@ -1,5 +1,18 @@
 #Moneris API Changelog
 
+###0.8.0 (2019-09-19)
+
+####Added
+- add credential on file support [`4e099821ce`](https://github.com/craigpaul/moneris-api/commit/4e099821ce)
+
+####Changed
+
+- Changes phpunit versions [`023127ad9a`](https://github.com/craigpaul/moneris-api/commit/023127ad9a)
+- Specifically calls the vendor bin file for phpunit [`87a18dff46`](https://github.com/craigpaul/moneris-api/commit/87a18dff46)
+- Removes unnecessary package. Fixes styling on phpunit xml file [`5c74feb91d`](https://github.com/craigpaul/moneris-api/commit/5c74feb91d)
+- Updates travis config to use a matrix so we can control the version of phpunit being downloaded [`62623ce6df`](https://github.com/craigpaul/moneris-api/commit/62623ce6df)
+- Removes support for full card lookup as Moneris recommends against using this feature since it can cause PCI compliance headaches [`e2d0c14974`](https://github.com/craigpaul/moneris-api/commit/e2d0c14974)
+
 ###0.7.0 (2019-07-19)
 
 ####Changed
