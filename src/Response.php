@@ -180,7 +180,7 @@ class Response
 
         $code = !is_null($receipt->read('cvd_result')) ? $receipt->read('cvd_result') : null;
 
-        if ($gateway->cvd && !is_null($code) && $code !== 'null' && !in_array($code{1}, $gateway->cvdCodes)) {
+        if ($gateway->cvd && !is_null($code) && $code !== 'null' && !in_array($code[1], $gateway->cvdCodes)) {
             $this->status = self::CVD;
             $this->failedCvd = true;
 
