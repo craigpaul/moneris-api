@@ -1,5 +1,10 @@
 #Moneris API Changelog
 
+###0.8.1 (2020-05-05)
+
+####Changed
+- replace {} with \[\] for array reference [`a1addcc813`](https://github.com/craigpaul/moneris-api/commit/a1addcc813)
+
 ###0.8.0 (2019-09-19)
 
 ####Added
