@@ -42,7 +42,7 @@ class RecurringTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    protected function setUp() : void
+    public function setUp()
     {
         parent::setUp();
 
