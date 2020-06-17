@@ -37,6 +37,7 @@ class Receipt
             ['property' => 'transaction', 'key' => 'TransID', 'cast' => 'string'],
             ['property' => 'type', 'key' => 'TransType', 'cast' => 'string'],
             ['property' => 'issuer_id', 'key' => 'IssuerId', 'cast' => 'string'],
+            ['property' => 'recur', 'key' => 'RecurSuccess', 'cast' => 'boolean'],
         ]);
     }
 
@@ -45,8 +46,9 @@ class Receipt
         $complete = $this->read('complete');
         $valid_code = $this->read('code') !== 'null';
         $code = (int)$this->read('code');
+        $recur = $this->read('recur');
 
-        return $complete && $valid_code && $code >= 0 && $code < 50;
+        return $complete && ($valid_code || $recur) && $code >= 0 && $code < 50;
     }
 
     /**
