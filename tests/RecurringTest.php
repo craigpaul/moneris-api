@@ -5,7 +5,6 @@ use CraigPaul\Moneris\Gateway;
 use CraigPaul\Moneris\Moneris;
 use CraigPaul\Moneris\Response;
 use CraigPaul\Moneris\Receipt;
-use Carbon\Carbon;
 
 class RecurringTest extends \PHPUnit\Framework\TestCase
 {
@@ -71,7 +70,9 @@ class RecurringTest extends \PHPUnit\Framework\TestCase
 
     /** @test */
     public function it_can_make_a_recurring_purchase () {
-        $this->params['recur']['start_date'] = Carbon::now()->addDays(2)->format('Y/m/d');
+        $d = new DateTime();
+        $d->add(new DateInterval('P2D'));
+        $this->params['recur']['start_date'] = $d->format('Y/m/d');
         $response = $this->gateway->purchase($this->params);
 
         $this->assertEquals(Response::class, get_class($response));
@@ -82,7 +83,7 @@ class RecurringTest extends \PHPUnit\Framework\TestCase
     /** @test */
     public function it_can_fail_with_a_recurring_purchase () {
         // fails on date being the same as today
-        $this->params['recur']['start_date'] = Carbon::now()->format('Y/m/d');
+        $this->params['recur']['start_date'] = date('Y/m/d');
         $response = $this->gateway->purchase($this->params);
 
         $this->assertEquals(Response::class, get_class($response));
