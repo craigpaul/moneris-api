@@ -386,7 +386,7 @@ $response = $vault->expiring();
 
 Credit cards stored in the Moneris Vault have a slightly different flow for purchasing and pre-authorization. Any of the other transactions work exactly the same as shown above. 
 
-#### Purchase
+#### Vault Purchase
 
 ```php
 $card = CreditCard::create('4242424242424242', '2012');
@@ -397,9 +397,6 @@ $key = $response->receipt()->read('key');
 $params = [
     'order_id' => uniqid('1234-56789', true),
     'amount' => '1.00',
-    'credit_card' => '4242424242424242',
-    'expiry_month' => '12',
-    'expiry_year' => '20',
     'data_key' => $key,
 ];
 
@@ -408,7 +405,7 @@ $response = $vault->purchase($params); //
 
 > **Note:** The Vault is used for the transaction here instead of the base Gateway object.
 
-#### Pre-Authorization
+#### Vault Pre-Authorization
 
 ```php
 $card = CreditCard::create('4242424242424242', '2012');
@@ -419,9 +416,6 @@ $key = $response->receipt()->read('key');
 $params = [
     'order_id' => uniqid('1234-56789', true),
     'amount' => '1.00',
-    'credit_card' => '4242424242424242',
-    'expiry_month' => '12',
-    'expiry_year' => '20',
     'data_key' => $key,
 ];
 
